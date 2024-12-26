@@ -98,14 +98,19 @@ static func transposed(v: Vector2i) -> Vector2i:
 
 # TODO: transposed(TileSet.CellNeighbor) -> Tileset.CellNeighbor
 
+# TODO: Preset.gd
+
 ## Maps a Neighborhood to a preset of the specified name.
 static func neighborhood_preset(
 	neighborhood: Neighborhood,
 	preset_name: String = 'Standard'
 ) -> Dictionary:
 	var topology: Topology = NEIGHBORHOOD_TOPOLOGIES[neighborhood]
-	# TODO: check if the preset actually exists
-	var out: Dictionary = PRESETS[topology][preset_name].duplicate(true)
+	# TODO: test when the preset doesn't exist
+	var available_presets = PRESETS[topology]
+	if preset_name not in available_presets:
+		return {'size': Vector2i.ONE, 'sequences': []}
+	var out: Dictionary = available_presets[preset_name].duplicate(true)
 	# All Horizontal neighborhoods can be transposed to Vertical
 	if neighborhood == Neighborhood.TRIANGLE_VERTICAL:
 		out.size = transposed(out.size)
@@ -191,11 +196,26 @@ const NEIGHBORS: Array[TileSet.CellNeighbor] = [
 class TerrainLayer:
 	extends Resource
 
+	## A list of which CellNeighbors to care about during terrain checking.
 	var filter: Array = []
+
+	## rules: Dictionary{
+	##   key: Condition = The terrains that surround this tile.
+	##   value: {
+	##     'sid': int = The Source ID of this tile.
+	##     'tile': Vector2i = The coordinates of this tile in its Atlas.
+	##   } = The sprite that will be chosen when the condition is satisfied.
+	## }
+	##
+	## Condition: Array[
+	##   type: int = The terrain found at this position in the filter.
+	##   size = filter.size()
+	## ]
 	var rules: Dictionary = {}
 	func _init(filter: Array) -> void:
 		self.filter = filter
 
+	## Add a new rule for a specific tile in an atlas.
 	func read_tile(data: TileData, mapping: Dictionary) -> void:
 		if data.terrain_set != 0:
 			# This was already handled as an error in the parent TerrainDual
@@ -224,17 +244,20 @@ class TerrainLayer:
 	func _condition_to_dict(condition: Array) -> Dictionary:
 		return arrays_to_dict(filter.map(neighbor_name), condition)
 
-	## NOTE: this does not belong here
+	# NOTE: this does not belong here
+	## Merges an Array of keys and an Array of values into a Dictionary.
 	static func arrays_to_dict(keys: Array, values: Array) -> Dictionary:
 		var out := {}
 		for i in keys.size():
 			out[keys[i]] = values[i]
 		return out
 
-	## NOTE: this does not belong here
+	# NOTE: this does not belong here
+	## Returns a shorthand name for a CellNeighbor.
 	static func neighbor_name(neighbor: TileSet.CellNeighbor) -> String:
 		const DIRECTIONS := ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE']
 		return DIRECTIONS[neighbor >> 1]
+
 
 var neighborhood: Neighborhood
 var terrains: Dictionary
