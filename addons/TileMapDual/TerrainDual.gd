@@ -5,10 +5,12 @@ extends Resource
 
 # Functions are ordered top to bottom in the transformation pipeline
 
+## Maps a TileSet to a Neighborhood.
 static func tileset_neighborhood(tile_set: TileSet) -> Neighborhood:
 	return GRID_NEIGHBORHOODS[Display.tileset_gridshape(tile_set)]
 
 
+## Maps a GridShape to a Neighborhood.
 const GRID_NEIGHBORHOODS = {
 	Display.GridShape.SQUARE: Neighborhood.SQUARE,
 	Display.GridShape.ISO: Neighborhood.ISOMETRIC,
@@ -19,6 +21,7 @@ const GRID_NEIGHBORHOODS = {
 }
 
 
+## A specific neighborhood that the Display tiles will look at.
 enum Neighborhood {
 	SQUARE,
 	ISOMETRIC,
@@ -28,6 +31,7 @@ enum Neighborhood {
 
 
 ## Maps a Neighborhood to a set of atlas terrain neighbors.
+# TODO: merge world_to_affected_display_neighbors and display_to_world_neighbors here.
 const NEIGHBORHOOD_LAYERS := {
 	Neighborhood.SQUARE: [
 		[ # []
@@ -72,6 +76,7 @@ const NEIGHBORHOOD_LAYERS := {
 }
 
 
+## Maps a Neighborhood to a Topology.
 const NEIGHBORHOOD_TOPOLOGIES := {
 	Neighborhood.SQUARE: Topology.SQUARE,
 	Neighborhood.ISOMETRIC: Topology.SQUARE,
@@ -80,22 +85,27 @@ const NEIGHBORHOOD_TOPOLOGIES := {
 }
 
 
+## Determines the available Terrain presets for a certain Atlas.
 enum Topology {
 	SQUARE,
 	TRIANGLE,
 }
 
 
+## Swaps the X and Y axes of a Vector2i.
 static func transposed(v: Vector2i) -> Vector2i:
 	return Vector2i(v.y, v.x)
 
+# TODO: transposed(TileSet.CellNeighbor) -> Tileset.CellNeighbor
 
+## Maps a Neighborhood to a preset of the specified name.
 static func neighborhood_preset(
 	neighborhood: Neighborhood,
-	name: String = 'Standard'
+	preset_name: String = 'Standard'
 ) -> Dictionary:
 	var topology: Topology = NEIGHBORHOOD_TOPOLOGIES[neighborhood]
-	var out: Dictionary = PRESETS[topology][name].duplicate(true)
+	# TODO: check if the preset actually exists
+	var out: Dictionary = PRESETS[topology][preset_name].duplicate(true)
 	# All Horizontal neighborhoods can be transposed to Vertical
 	if neighborhood == Neighborhood.TRIANGLE_VERTICAL:
 		out.size = transposed(out.size)
@@ -105,6 +115,7 @@ static func neighborhood_preset(
 	return out
 
 
+## Contains all of the builtin Terrain presets for each topology
 const PRESETS := {
 	Topology.SQUARE: {
 		'Standard': {
@@ -161,6 +172,7 @@ const PRESETS := {
 }
 
 
+## Every corner CellNeighbor, in order.
 const NEIGHBORS: Array[TileSet.CellNeighbor] = [
 	TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
 	TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
@@ -172,7 +184,10 @@ const NEIGHBORS: Array[TileSet.CellNeighbor] = [
 	TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
 ]
 
+# TODO: document the rest
 
+# TODO: extract to file
+## A set of rules usable by a single DisplayLayer.
 class TerrainLayer:
 	extends Resource
 
@@ -237,13 +252,13 @@ func _changed():
 	emit_changed()
 
 
+## Create rules for every atlas in a TileSet.
 func read_tileset(tile_set: TileSet) -> void:
 	terrains = {}
 	layers = []
-	neighborhood = Neighborhood.SQUARE
+	neighborhood = Neighborhood.SQUARE # default
 	if tile_set == null:
 		return
-
 	neighborhood = tileset_neighborhood(tile_set)
 	layers = NEIGHBORHOOD_LAYERS[neighborhood].map(TerrainLayer.new)
 	for i in tile_set.get_source_count():
@@ -254,8 +269,8 @@ func read_tileset(tile_set: TileSet) -> void:
 		read_atlas(src, sid)
 
 
+## Create rules for every tile in an atlas.
 func read_atlas(atlas: TileSetAtlasSource, sid: int) -> void:
-	# Read every tile in the atlas
 	var size = atlas.get_atlas_grid_size()
 	for y in size.y:
 		for x in size.x:
@@ -266,9 +281,10 @@ func read_atlas(atlas: TileSetAtlasSource, sid: int) -> void:
 			read_tile(atlas, sid, tile)
 
 
+## Add a new rule for a specific tile in an atlas.
 func read_tile(atlas: TileSetAtlasSource, sid: int, tile: Vector2i) -> void:
 	var data := atlas.get_tile_data(tile, 0)
-	var mapping := { 'sid': sid, 'tile': tile }
+	var mapping := {'sid': sid, 'tile': tile}
 	var terrain_set := data.terrain_set
 	if terrain_set != 0:
 		push_warning(
