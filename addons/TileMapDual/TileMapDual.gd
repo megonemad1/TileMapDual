@@ -24,9 +24,12 @@ func _atlas_added(source_id: int, atlas: TileSetAtlasSource):
 	pass
 
 
-## Sets up the Dual-Grid illusion.
+## Makes the main world grid invisible.
+## The main tiles don't need to be seen. Only the DisplayLayers should be visible.
 ## Called on ready.
 func _make_self_invisible() -> void:
+	if material != null:
+		return
 	material = CanvasItemMaterial.new()
 	material.light_mode = CanvasItemMaterial.LightMode.LIGHT_MODE_LIGHT_ONLY
 
@@ -56,7 +59,7 @@ func _changed() -> void:
 ## 'terrain' is which terrain type to draw.
 ## terrain -1 completely removes the tile,
 ## and by default, terrain 0 is the empty tile.
-func draw(cell: Vector2i, terrain: int = 1) -> void:
+func draw_cell(cell: Vector2i, terrain: int = 1) -> void:
 	var terrains := _display.terrain.terrains
 	if terrain not in terrains:
 		erase_cell(cell)
