@@ -32,47 +32,122 @@ enum Neighborhood {
 
 
 ## Maps a Neighborhood to a set of atlas terrain neighbors.
-# TODO: merge world_to_affected_display_neighbors and display_to_world_neighbors here.
 const NEIGHBORHOOD_LAYERS := {
 	Neighborhood.SQUARE: [
-		[ # []
-			TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
-			TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
-			TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
-			TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
-		]
+		{ # []
+			'terrain_neighbors': [
+				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
+			],
+			'world_to_affected_display_neighbors': [
+				[],
+				[TileSet.CELL_NEIGHBOR_RIGHT_SIDE],
+				[TileSet.CELL_NEIGHBOR_BOTTOM_SIDE],
+				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER],
+			],
+			'display_to_world_neighbors': [
+				[TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER],
+				[TileSet.CELL_NEIGHBOR_TOP_SIDE],
+				[TileSet.CELL_NEIGHBOR_LEFT_SIDE],
+				[],
+			],
+		},
 	],
 	Neighborhood.ISOMETRIC: [
-		[ # <>
-			TileSet.CELL_NEIGHBOR_TOP_CORNER,
-			TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
-			TileSet.CELL_NEIGHBOR_LEFT_CORNER,
-			TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
-		]
+		{ # <>
+			'terrain_neighbors': [
+				TileSet.CELL_NEIGHBOR_TOP_CORNER,
+				TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
+				TileSet.CELL_NEIGHBOR_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
+			],
+			'world_to_affected_display_neighbors': [
+				[], # TOP
+				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE], # RIGHT
+				[TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_SIDE], # LEFT
+				[TileSet.CELL_NEIGHBOR_BOTTOM_CORNER], # BOTTOM
+			],
+			'display_to_world_neighbors': [
+				[TileSet.CELL_NEIGHBOR_TOP_CORNER], # TOP
+				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE], # RIGHT
+				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE], # LEFT
+				[], # BOTTOM
+			],
+		},
 	],
 	Neighborhood.TRIANGLE_HORIZONTAL: [
-		[ # v
-			TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
-			TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
-			TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
-		],
-		[ # ^
-			TileSet.CELL_NEIGHBOR_TOP_CORNER,
-			TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
-			TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
-		],
+		{ # v
+			'terrain_neighbors': [
+				TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
+				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
+			],
+			'world_to_affected_display_neighbors': [
+				[],
+				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
+				[TileSet.CELL_NEIGHBOR_RIGHT_SIDE],
+			],
+			'display_to_world_neighbors': [
+				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
+				[TileSet.CELL_NEIGHBOR_LEFT_SIDE],
+				[],
+			],
+		},
+		{ # ^
+			'terrain_neighbors': [
+				TileSet.CELL_NEIGHBOR_TOP_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
+			],
+			'world_to_affected_display_neighbors': [
+				[],
+				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
+				[TileSet.CELL_NEIGHBOR_RIGHT_SIDE],
+			],
+			'display_to_world_neighbors': [
+				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
+				[TileSet.CELL_NEIGHBOR_LEFT_SIDE],
+				[],
+			],
+		},
 	],
 	Neighborhood.TRIANGLE_VERTICAL: [
-		[ # >
-			TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
-			TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
-			TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
-		],
-		[ # <
-			TileSet.CELL_NEIGHBOR_LEFT_CORNER,
-			TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
-			TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
-		],
+		{ # >
+			'terrain_neighbors': [
+				TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
+				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
+			],
+			'world_to_affected_display_neighbors': [
+				[],
+				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE],
+				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
+			],
+			'display_to_world_neighbors': [
+				[],
+				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
+				[TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_SIDE],
+			],
+		},
+		{ # <
+			'terrain_neighbors': [
+				TileSet.CELL_NEIGHBOR_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
+			],
+			'world_to_affected_display_neighbors': [
+				[],
+				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
+				[TileSet.CELL_NEIGHBOR_BOTTOM_SIDE],
+			],
+			'display_to_world_neighbors': [
+				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
+				[TileSet.CELL_NEIGHBOR_TOP_SIDE],
+				[],
+			],
+		},
 	],
 }
 
@@ -197,7 +272,17 @@ class TerrainLayer:
 	extends Resource
 
 	## A list of which CellNeighbors to care about during terrain checking.
-	var filter: Array = []
+	var terrain_neighbors: Array = []
+
+	## When a cell is modified in a DisplayLayer's parent TileMapDual,
+	## the DisplayLayer needs to know which of its display cells need to be recomputed.
+	## This Array stores the paths from the edited cell to the affected display cells.
+	var world_to_affected_display_neighbors: Array
+
+	## When a cell in a DisplayLayer needs to be recomputed,
+	## the TerrainLayer needs to know which tiles surround it.
+	## This Array stores the paths from the affected cell to the neighboring world cells.
+	var display_to_world_neighbors: Array
 
 	## rules: Dictionary{
 	##   key: Condition = The terrains that surround this tile.
@@ -212,15 +297,17 @@ class TerrainLayer:
 	##   size = filter.size()
 	## ]
 	var rules: Dictionary = {}
-	func _init(filter: Array) -> void:
-		self.filter = filter
+	func _init(fields: Dictionary) -> void:
+		self.terrain_neighbors = fields.terrain_neighbors
+		self.world_to_affected_display_neighbors = fields.world_to_affected_display_neighbors
+		self.display_to_world_neighbors = fields.display_to_world_neighbors
 
 	## Add a new rule for a specific tile in an atlas.
 	func read_tile(data: TileData, mapping: Dictionary) -> void:
 		if data.terrain_set != 0:
 			# This was already handled as an error in the parent TerrainDual
 			return
-		var condition := filter.map(data.get_terrain_peering_bit)
+		var condition := terrain_neighbors.map(data.get_terrain_peering_bit)
 		# Skip tiles with no peering bits in this filter
 		# They might be used for a different layer,
 		# or may have no peering bits at all, which will just be ignored by all layers
@@ -228,7 +315,7 @@ class TerrainLayer:
 			if condition.any(func(neighbor): return neighbor != -1):
 				push_warning(
 					"Invalid Tile Neighbors at %s.\n" % [mapping] +
-					"Expected neighbors: %s" % [filter.map(neighbor_name)]
+					"Expected neighbors: %s" % [terrain_neighbors.map(Util.neighbor_name)]
 				)
 			return
 		if condition in rules:
@@ -242,21 +329,7 @@ class TerrainLayer:
 		rules[condition] = mapping
 
 	func _condition_to_dict(condition: Array) -> Dictionary:
-		return arrays_to_dict(filter.map(neighbor_name), condition)
-
-	# NOTE: this does not belong here
-	## Merges an Array of keys and an Array of values into a Dictionary.
-	static func arrays_to_dict(keys: Array, values: Array) -> Dictionary:
-		var out := {}
-		for i in keys.size():
-			out[keys[i]] = values[i]
-		return out
-
-	# NOTE: this does not belong here
-	## Returns a shorthand name for a CellNeighbor.
-	static func neighbor_name(neighbor: TileSet.CellNeighbor) -> String:
-		const DIRECTIONS := ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE']
-		return DIRECTIONS[neighbor >> 1]
+		return Util.arrays_to_dict(terrain_neighbors.map(Util.neighbor_name), condition)
 
 
 ## The Neighborhood type of this TerrainDual.

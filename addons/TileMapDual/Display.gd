@@ -99,143 +99,43 @@ const GRIDS: Dictionary = {
 	GridShape.SQUARE: [
 		{ # []
 			'offset': Vector2(-0.5, -0.5),
-			'world_to_affected_display_neighbors': [
-				[], # NW
-				[TileSet.CELL_NEIGHBOR_RIGHT_SIDE], # NE
-				[TileSet.CELL_NEIGHBOR_BOTTOM_SIDE], # SW
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER], # SE
-			],
-			'display_to_world_neighbors': [
-				[TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER], # NW
-				[TileSet.CELL_NEIGHBOR_TOP_SIDE], # NE
-				[TileSet.CELL_NEIGHBOR_LEFT_SIDE], # SW
-				[], # SE
-			],
 		}
 	],
 	GridShape.ISO: [
 		{ # <>
 			'offset': Vector2(0, -0.5),
-			'world_to_affected_display_neighbors': [
-				[], # TOP
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE], # RIGHT
-				[TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_SIDE], # LEFT
-				[TileSet.CELL_NEIGHBOR_BOTTOM_CORNER], # BOTTOM
-			],
-			'display_to_world_neighbors': [
-				[TileSet.CELL_NEIGHBOR_TOP_CORNER], # TOP
-				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE], # RIGHT
-				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE], # LEFT
-				[], # BOTTOM
-			],
 		}
 	],
 	GridShape.HALF_OFF_HORI: [
-		{
+		{ # v
 			'offset': Vector2(0.0, -0.5),
-			'world_to_affected_display_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_SIDE],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
-			],
-			'display_to_world_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
-				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE],
-			],
-		}, {
+		},
+		{ # ^
 			'offset': Vector2(-0.5, -0.5),
-			'world_to_affected_display_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
-				[TileSet.CELL_NEIGHBOR_RIGHT_SIDE],
-			],
-			'display_to_world_neighbors': [
-				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
-				[TileSet.CELL_NEIGHBOR_LEFT_SIDE],
-				[],
-			],
 		},
 	],
 	GridShape.HALF_OFF_VERT: [
-		{
+		{ # >
 			'offset': Vector2(-0.5, 0.0),
-			'world_to_affected_display_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
-			],
-			'display_to_world_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_SIDE],
-			],
-		}, {
+		},
+		{ # <
 			'offset': Vector2(-0.5, -0.5),
-			'world_to_affected_display_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_SIDE],
-			],
-			'display_to_world_neighbors': [
-				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
-				[TileSet.CELL_NEIGHBOR_TOP_SIDE],
-				[],
-			],
 		},
 	],
 	GridShape.HEX_HORI: [
-		{
+		{ # v
 			'offset': Vector2(0.0, -3.0 / 8.0),
-			'world_to_affected_display_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_SIDE],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
-			],
-			'display_to_world_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
-				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE],
-			],
-		}, {
+		},
+		{ # ^
 			'offset': Vector2(-0.5, -3.0 / 8.0),
-			'world_to_affected_display_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
-				[TileSet.CELL_NEIGHBOR_RIGHT_SIDE],
-			],
-			'display_to_world_neighbors': [
-				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
-				[TileSet.CELL_NEIGHBOR_LEFT_SIDE],
-				[],
-			],
 		},
 	],
 	GridShape.HEX_VERT: [
 		{ # >
 			'offset': Vector2(-3.0 / 8.0, 0.0),
-			'world_to_affected_display_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
-			],
-			'display_to_world_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_SIDE],
-			],
-		}, {
+		},
+		{ # <
 			'offset': Vector2(-3.0 / 8.0, -0.5),
-			'world_to_affected_display_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_SIDE],
-			],
-			'display_to_world_neighbors': [
-				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
-				[TileSet.CELL_NEIGHBOR_TOP_SIDE],
-				[],
-			],
 		},
 	],
 }
