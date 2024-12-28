@@ -3,6 +3,7 @@
 class_name TerrainDual
 extends Resource
 
+
 # Functions are ordered top to bottom in the transformation pipeline
 
 ## Maps a TileSet to a Neighborhood.
@@ -189,7 +190,6 @@ const NEIGHBORS: Array[TileSet.CellNeighbor] = [
 	TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
 ]
 
-# TODO: document the rest
 
 # TODO: extract to file
 ## A set of rules usable by a single DisplayLayer.
@@ -259,8 +259,13 @@ class TerrainLayer:
 		return DIRECTIONS[neighbor >> 1]
 
 
+## The Neighborhood type of this TerrainDual.
 var neighborhood: Neighborhood
+
+## Maps a terrain type to its sprite as registered in the TerrainDual.
 var terrains: Dictionary
+
+## The TerrainLayers for this TerrainDual.
 var layers: Array
 var _tileset_watcher: TileSetWatcher
 func _init(tileset_watcher: TileSetWatcher) -> void:
@@ -269,6 +274,8 @@ func _init(tileset_watcher: TileSetWatcher) -> void:
 	_changed()
 
 
+## Emitted when any of the terrains change.
+## NOTE: Prefer connecting to TerrainDual.changed instead of TileSetWatcher.terrains_changed.
 func _changed():
 	#print('SIGNAL EMITTED: changed(%s)' % {})
 	read_tileset(_tileset_watcher.tile_set)
@@ -339,13 +346,14 @@ static func write_default_preset(tile_set: TileSet, atlas: TileSetAtlasSource) -
 	)
 	write_preset(
 		atlas,
-		NEIGHBORHOOD_LAYERS[neighborhood],
+		NEIGHBORHOOD_LAYERS[neighborhood], # TODO: can we just pass in the neighborhood right away
 		neighborhood_preset(neighborhood),
 		terrain_offset + 0,
 		terrain_offset + 1,
 	)
 
 
+## Adds 2 new terrain types to terrain set 0 for the sprites to use.
 static func create_false_terrain_set(tile_set: TileSet, terrain_name: String) -> int:
 	if tile_set.get_terrain_sets_count() == 0:
 		tile_set.add_terrain_set()
@@ -358,6 +366,10 @@ static func create_false_terrain_set(tile_set: TileSet, terrain_name: String) ->
 	return terrain_offset
 
 
+## Takes a preset and puts it onto the given atlas.
+## ARGUMENTS:
+## - atlas: the atlas source to apply the preset to.
+## - filters: the neighborhood filter
 static func write_preset(
 	atlas: TileSetAtlasSource,
 	filters: Array,
@@ -391,6 +403,8 @@ static func write_preset(
 	atlas.get_tile_data(tile_fg, 0).terrain = terrain_foreground
 
 
+## Unregisters all the tiles in an atlas and changes the size of the
+## individual sprites to accomodate a size.x by size.y grid of sprites.
 static func clear_and_resize_atlas(atlas: TileSetAtlasSource, size: Vector2i):
 	# Clear all tiles
 	atlas.texture_region_size = atlas.texture.get_size() + Vector2.ONE

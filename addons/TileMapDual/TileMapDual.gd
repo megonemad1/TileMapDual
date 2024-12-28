@@ -34,6 +34,7 @@ func _make_self_invisible() -> void:
 	material.light_mode = CanvasItemMaterial.LightMode.LIGHT_MODE_LIGHT_ONLY
 
 
+## HACK: How long to wait before processing another "frame"
 @export var map_refresh_cooldown: float = 0.0
 var _timer: float = 0.0
 func _process(delta: float) -> void: # Only used inside the editor

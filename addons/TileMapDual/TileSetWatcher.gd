@@ -59,6 +59,7 @@ func _atlas_added(source_id: int, atlas: TileSetAtlasSource):
 var _flag_terrains_changed := false
 ## Emitted when an atlas is added or removed,
 ## or when the terrains change in one of the Atlases.
+## NOTE: Prefer connecting to TerrainDual.changed instead of TileSetWatcher.terrains_changed.
 signal terrains_changed
 func _terrains_changed():
 	#print('SIGNAL EMITTED: terrains_changed(%s)' % {})

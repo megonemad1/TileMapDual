@@ -4,9 +4,6 @@ class_name Display
 extends Node
 
 
-const TODO = null
-
-
 ## See TerrainDual.gd
 var terrain: TerrainDual
 ## See TileSetWatcher.gd
