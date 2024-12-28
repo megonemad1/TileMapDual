@@ -42,8 +42,8 @@ func update_tiles_all(cache: TileCache) -> void:
 func update_tiles(cache: TileCache, updated_world_cells: Array) -> void:
 	#push_warning('updating tiles')
 	var already_updated := Set.new()
-	# The order of these two for loops does not matter.
-	for path: Array in _terrain.world_to_affected_display_neighbors:
+	for path: Array in _terrain.display_to_world_neighbors:
+		path = path.map(Util.reverse_neighbor)
 		for world_cell: Vector2i in updated_world_cells:
 			var display_cell := follow_path(world_cell, path)
 			if already_updated.insert(display_cell):

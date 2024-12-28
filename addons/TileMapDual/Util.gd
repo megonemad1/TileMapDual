@@ -10,6 +10,19 @@ static func arrays_to_dict(keys: Array, values: Array) -> Dictionary:
 	return out
 
 
+## Swaps the X and Y axes of a Vector2i.
+static func transpose_vec(v: Vector2i) -> Vector2i:
+	return Vector2i(v.y, v.x)
+
+
+# TODO: transposed(TileSet.CellNeighbor) -> Tileset.CellNeighbor
+
+
+## Reverses the direction of a CellNeighbor.
+static func reverse_neighbor(neighbor: TileSet.CellNeighbor) -> TileSet.CellNeighbor:
+	return (neighbor + 8) % 16
+
+
 ## Returns a shorthand name for a CellNeighbor.
 static func neighbor_name(neighbor: TileSet.CellNeighbor) -> String:
 	const DIRECTIONS := ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE']

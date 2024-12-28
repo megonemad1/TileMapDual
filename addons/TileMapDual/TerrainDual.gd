@@ -41,12 +41,6 @@ const NEIGHBORHOOD_LAYERS := {
 				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
 			],
-			'world_to_affected_display_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_RIGHT_SIDE],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_SIDE],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER],
-			],
 			'display_to_world_neighbors': [
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER],
 				[TileSet.CELL_NEIGHBOR_TOP_SIDE],
@@ -63,17 +57,11 @@ const NEIGHBORHOOD_LAYERS := {
 				TileSet.CELL_NEIGHBOR_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
 			],
-			'world_to_affected_display_neighbors': [
-				[], # TOP
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE], # RIGHT
-				[TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_SIDE], # LEFT
-				[TileSet.CELL_NEIGHBOR_BOTTOM_CORNER], # BOTTOM
-			],
 			'display_to_world_neighbors': [
-				[TileSet.CELL_NEIGHBOR_TOP_CORNER], # TOP
-				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE], # RIGHT
-				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE], # LEFT
-				[], # BOTTOM
+				[TileSet.CELL_NEIGHBOR_TOP_CORNER],
+				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE],
+				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
+				[],
 			],
 		},
 	],
@@ -83,11 +71,6 @@ const NEIGHBORHOOD_LAYERS := {
 				TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
-			],
-			'world_to_affected_display_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
-				[TileSet.CELL_NEIGHBOR_RIGHT_SIDE],
 			],
 			'display_to_world_neighbors': [
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
@@ -101,11 +84,6 @@ const NEIGHBORHOOD_LAYERS := {
 				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
 			],
-			'world_to_affected_display_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
-				[TileSet.CELL_NEIGHBOR_RIGHT_SIDE],
-			],
 			'display_to_world_neighbors': [
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
 				[TileSet.CELL_NEIGHBOR_LEFT_SIDE],
@@ -113,17 +91,13 @@ const NEIGHBORHOOD_LAYERS := {
 			],
 		},
 	],
+	# TODO: this is just TRIANGLE_HORIZONTAL but transposed. this can be refactored.
 	Neighborhood.TRIANGLE_VERTICAL: [
 		{ # >
 			'terrain_neighbors': [
 				TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
-			],
-			'world_to_affected_display_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
 			],
 			'display_to_world_neighbors': [
 				[],
@@ -136,11 +110,6 @@ const NEIGHBORHOOD_LAYERS := {
 				TileSet.CELL_NEIGHBOR_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
-			],
-			'world_to_affected_display_neighbors': [
-				[],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE],
-				[TileSet.CELL_NEIGHBOR_BOTTOM_SIDE],
 			],
 			'display_to_world_neighbors': [
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
@@ -168,12 +137,6 @@ enum Topology {
 }
 
 
-## Swaps the X and Y axes of a Vector2i.
-static func transposed(v: Vector2i) -> Vector2i:
-	return Vector2i(v.y, v.x)
-
-# TODO: transposed(TileSet.CellNeighbor) -> Tileset.CellNeighbor
-
 # TODO: Preset.gd
 
 ## Maps a Neighborhood to a preset of the specified name.
@@ -189,10 +152,10 @@ static func neighborhood_preset(
 	var out: Dictionary = available_presets[preset_name].duplicate(true)
 	# All Horizontal neighborhoods can be transposed to Vertical
 	if neighborhood == Neighborhood.TRIANGLE_VERTICAL:
-		out.size = transposed(out.size)
+		out.size = Util.transpose_vec(out.size)
 		for seq in out.sequences:
 			for i in seq.size():
-				seq[i] = transposed(seq[i])
+				seq[i] = Util.transpose_vec(seq[i])
 	return out
 
 
@@ -274,11 +237,6 @@ class TerrainLayer:
 	## A list of which CellNeighbors to care about during terrain checking.
 	var terrain_neighbors: Array = []
 
-	## When a cell is modified in a DisplayLayer's parent TileMapDual,
-	## the DisplayLayer needs to know which of its display cells need to be recomputed.
-	## This Array stores the paths from the edited cell to the affected display cells.
-	var world_to_affected_display_neighbors: Array
-
 	## When a cell in a DisplayLayer needs to be recomputed,
 	## the TerrainLayer needs to know which tiles surround it.
 	## This Array stores the paths from the affected cell to the neighboring world cells.
@@ -299,7 +257,6 @@ class TerrainLayer:
 	var rules: Dictionary = {}
 	func _init(fields: Dictionary) -> void:
 		self.terrain_neighbors = fields.terrain_neighbors
-		self.world_to_affected_display_neighbors = fields.world_to_affected_display_neighbors
 		self.display_to_world_neighbors = fields.display_to_world_neighbors
 
 	## Add a new rule for a specific tile in an atlas.
