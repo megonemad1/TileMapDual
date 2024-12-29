@@ -32,231 +32,93 @@ enum Neighborhood {
 
 
 ## Maps a Neighborhood to a set of atlas terrain neighbors.
-# TODO: merge world_to_affected_display_neighbors and display_to_world_neighbors here.
 const NEIGHBORHOOD_LAYERS := {
 	Neighborhood.SQUARE: [
-		[ # []
-			TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
-			TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
-			TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
-			TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
-		]
+		{ # []
+			'terrain_neighbors': [
+				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
+			],
+			'display_to_world_neighbors': [
+				[TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER],
+				[TileSet.CELL_NEIGHBOR_TOP_SIDE],
+				[TileSet.CELL_NEIGHBOR_LEFT_SIDE],
+				[],
+			],
+		},
 	],
 	Neighborhood.ISOMETRIC: [
-		[ # <>
-			TileSet.CELL_NEIGHBOR_TOP_CORNER,
-			TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
-			TileSet.CELL_NEIGHBOR_LEFT_CORNER,
-			TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
-		]
+		{ # <>
+			'terrain_neighbors': [
+				TileSet.CELL_NEIGHBOR_TOP_CORNER,
+				TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
+				TileSet.CELL_NEIGHBOR_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
+			],
+			'display_to_world_neighbors': [
+				[TileSet.CELL_NEIGHBOR_TOP_CORNER],
+				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE],
+				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
+				[],
+			],
+		},
 	],
 	Neighborhood.TRIANGLE_HORIZONTAL: [
-		[ # v
-			TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
-			TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
-			TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
-		],
-		[ # ^
-			TileSet.CELL_NEIGHBOR_TOP_CORNER,
-			TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
-			TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
-		],
+		{ # v
+			'terrain_neighbors': [
+				TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
+				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
+			],
+			'display_to_world_neighbors': [
+				[],
+				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
+				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE],
+			],
+		},
+		{ # ^
+			'terrain_neighbors': [
+				TileSet.CELL_NEIGHBOR_TOP_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
+			],
+			'display_to_world_neighbors': [
+				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
+				[TileSet.CELL_NEIGHBOR_LEFT_SIDE],
+				[],
+			],
+		},
 	],
+	# TODO: this is just TRIANGLE_HORIZONTAL but transposed. this can be refactored.
 	Neighborhood.TRIANGLE_VERTICAL: [
-		[ # >
-			TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
-			TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
-			TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
-		],
-		[ # <
-			TileSet.CELL_NEIGHBOR_LEFT_CORNER,
-			TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
-			TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
-		],
+		{ # >
+			'terrain_neighbors': [
+				TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
+				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
+			],
+			'display_to_world_neighbors': [
+				[],
+				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
+				[TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_SIDE],
+			],
+		},
+		{ # <
+			'terrain_neighbors': [
+				TileSet.CELL_NEIGHBOR_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
+			],
+			'display_to_world_neighbors': [
+				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
+				[TileSet.CELL_NEIGHBOR_TOP_SIDE],
+				[],
+			],
+		},
 	],
 }
-
-
-## Maps a Neighborhood to a Topology.
-const NEIGHBORHOOD_TOPOLOGIES := {
-	Neighborhood.SQUARE: Topology.SQUARE,
-	Neighborhood.ISOMETRIC: Topology.SQUARE,
-	Neighborhood.TRIANGLE_HORIZONTAL: Topology.TRIANGLE,
-	Neighborhood.TRIANGLE_VERTICAL: Topology.TRIANGLE,
-}
-
-
-## Determines the available Terrain presets for a certain Atlas.
-enum Topology {
-	SQUARE,
-	TRIANGLE,
-}
-
-
-## Swaps the X and Y axes of a Vector2i.
-static func transposed(v: Vector2i) -> Vector2i:
-	return Vector2i(v.y, v.x)
-
-# TODO: transposed(TileSet.CellNeighbor) -> Tileset.CellNeighbor
-
-# TODO: Preset.gd
-
-## Maps a Neighborhood to a preset of the specified name.
-static func neighborhood_preset(
-	neighborhood: Neighborhood,
-	preset_name: String = 'Standard'
-) -> Dictionary:
-	var topology: Topology = NEIGHBORHOOD_TOPOLOGIES[neighborhood]
-	# TODO: test when the preset doesn't exist
-	var available_presets = PRESETS[topology]
-	if preset_name not in available_presets:
-		return {'size': Vector2i.ONE, 'sequences': []}
-	var out: Dictionary = available_presets[preset_name].duplicate(true)
-	# All Horizontal neighborhoods can be transposed to Vertical
-	if neighborhood == Neighborhood.TRIANGLE_VERTICAL:
-		out.size = transposed(out.size)
-		for seq in out.sequences:
-			for i in seq.size():
-				seq[i] = transposed(seq[i])
-	return out
-
-
-## Contains all of the builtin Terrain presets for each topology
-const PRESETS := {
-	Topology.SQUARE: {
-		'Standard': {
-			'size': Vector2i(4, 4),
-			'sequences': [
-				[ # []
-					Vector2i(0, 3),
-					Vector2i(3, 3),
-					Vector2i(0, 2),
-					Vector2i(1, 2),
-					Vector2i(0, 0),
-					Vector2i(3, 2),
-					Vector2i(2, 3),
-					Vector2i(3, 1),
-					Vector2i(1, 3),
-					Vector2i(0, 1),
-					Vector2i(1, 0),
-					Vector2i(2, 2),
-					Vector2i(3, 0),
-					Vector2i(2, 0),
-					Vector2i(1, 1),
-					Vector2i(2, 1),
-				],
-			],
-		},
-	},
-	Topology.TRIANGLE: {
-		'Standard': {
-			'size': Vector2i(4, 4),
-			'sequences': [
-				[ # v
-					Vector2i(0, 0),
-					Vector2i(2, 0),
-					Vector2i(3, 1),
-					Vector2i(1, 3),
-					Vector2i(1, 1),
-					Vector2i(3, 3),
-					Vector2i(2, 2),
-					Vector2i(0, 2),
-				],
-				[ # ^
-					Vector2i(0, 1),
-					Vector2i(2, 1),
-					Vector2i(3, 0),
-					Vector2i(1, 2),
-					Vector2i(1, 0),
-					Vector2i(3, 2),
-					Vector2i(2, 3),
-					Vector2i(0, 3),
-				],
-			],
-		},
-	},
-}
-
-
-## Every corner CellNeighbor, in order.
-const NEIGHBORS: Array[TileSet.CellNeighbor] = [
-	TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
-	TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
-	TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
-	TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
-	TileSet.CELL_NEIGHBOR_LEFT_CORNER,
-	TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
-	TileSet.CELL_NEIGHBOR_TOP_CORNER,
-	TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
-]
-
-
-# TODO: extract to file
-## A set of rules usable by a single DisplayLayer.
-class TerrainLayer:
-	extends Resource
-
-	## A list of which CellNeighbors to care about during terrain checking.
-	var filter: Array = []
-
-	## rules: Dictionary{
-	##   key: Condition = The terrains that surround this tile.
-	##   value: {
-	##     'sid': int = The Source ID of this tile.
-	##     'tile': Vector2i = The coordinates of this tile in its Atlas.
-	##   } = The sprite that will be chosen when the condition is satisfied.
-	## }
-	##
-	## Condition: Array[
-	##   type: int = The terrain found at this position in the filter.
-	##   size = filter.size()
-	## ]
-	var rules: Dictionary = {}
-	func _init(filter: Array) -> void:
-		self.filter = filter
-
-	## Add a new rule for a specific tile in an atlas.
-	func read_tile(data: TileData, mapping: Dictionary) -> void:
-		if data.terrain_set != 0:
-			# This was already handled as an error in the parent TerrainDual
-			return
-		var condition := filter.map(data.get_terrain_peering_bit)
-		# Skip tiles with no peering bits in this filter
-		# They might be used for a different layer,
-		# or may have no peering bits at all, which will just be ignored by all layers
-		if condition.any(func(neighbor): return neighbor == -1):
-			if condition.any(func(neighbor): return neighbor != -1):
-				push_warning(
-					"Invalid Tile Neighbors at %s.\n" % [mapping] +
-					"Expected neighbors: %s" % [filter.map(neighbor_name)]
-				)
-			return
-		if condition in rules:
-			var prev_mapping = rules[condition]
-			push_warning(
-				"2 different tiles in this TileSet have the same Terrain neighborhood:\n" +
-				"Condition: %s\n" % [_condition_to_dict(condition)] +
-				"1st: %s\n" % [prev_mapping] +
-				"2nd: %s" % [mapping]
-			)
-		rules[condition] = mapping
-
-	func _condition_to_dict(condition: Array) -> Dictionary:
-		return arrays_to_dict(filter.map(neighbor_name), condition)
-
-	# NOTE: this does not belong here
-	## Merges an Array of keys and an Array of values into a Dictionary.
-	static func arrays_to_dict(keys: Array, values: Array) -> Dictionary:
-		var out := {}
-		for i in keys.size():
-			out[keys[i]] = values[i]
-		return out
-
-	# NOTE: this does not belong here
-	## Returns a shorthand name for a CellNeighbor.
-	static func neighbor_name(neighbor: TileSet.CellNeighbor) -> String:
-		const DIRECTIONS := ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE']
-		return DIRECTIONS[neighbor >> 1]
 
 
 ## The Neighborhood type of this TerrainDual.
@@ -334,80 +196,3 @@ func read_tile(atlas: TileSetAtlasSource, sid: int, tile: Vector2i) -> void:
 	for i in layers.size():
 		var layer: TerrainLayer = layers[i]
 		layer.read_tile(data, mapping)
-
-
-## Would you like to automatically create tiles in the atlas?
-static func write_default_preset(tile_set: TileSet, atlas: TileSetAtlasSource) -> void:
-	#print('writing default')
-	var neighborhood := tileset_neighborhood(tile_set)
-	var terrain_offset := create_false_terrain_set(
-		tile_set,
-		atlas.texture.resource_path.get_file()
-	)
-	write_preset(
-		atlas,
-		NEIGHBORHOOD_LAYERS[neighborhood], # TODO: can we just pass in the neighborhood right away
-		neighborhood_preset(neighborhood),
-		terrain_offset + 0,
-		terrain_offset + 1,
-	)
-
-
-## Adds 2 new terrain types to terrain set 0 for the sprites to use.
-static func create_false_terrain_set(tile_set: TileSet, terrain_name: String) -> int:
-	if tile_set.get_terrain_sets_count() == 0:
-		tile_set.add_terrain_set()
-		tile_set.set_terrain_set_mode(0, TileSet.TERRAIN_MODE_MATCH_CORNERS)
-	var terrain_offset = tile_set.get_terrains_count(0)
-	tile_set.add_terrain(0)
-	tile_set.set_terrain_name(0, terrain_offset + 0, "BG - %s" % terrain_name)
-	tile_set.add_terrain(0)
-	tile_set.set_terrain_name(0, terrain_offset + 1, "FG - %s" % terrain_name)
-	return terrain_offset
-
-
-## Takes a preset and puts it onto the given atlas.
-## ARGUMENTS:
-## - atlas: the atlas source to apply the preset to.
-## - filters: the neighborhood filter
-static func write_preset(
-	atlas: TileSetAtlasSource,
-	filters: Array,
-	preset: Dictionary,
-	terrain_background: int,
-	terrain_foreground: int,
-) -> void:
-	#print('writing')
-	clear_and_resize_atlas(atlas, preset.size)
-	# Set peering bits
-	var sequences: Array = preset.sequences
-	for j in filters.size():
-		var filter = filters[j]
-		var sequence: Array = sequences[j]
-		for i in sequence.size():
-			var tile: Vector2i = sequence[i]
-			atlas.create_tile(tile)
-			var data := atlas.get_tile_data(tile, 0)
-			data.terrain_set = 0
-			for neighbor in filter:
-				data.set_terrain_peering_bit(
-					neighbor,
-					[terrain_background, terrain_foreground][i & 1]
-				)
-				i >>= 1
-	# Set terrains
-	var first_sequence: Array = sequences.front()
-	var tile_bg: Vector2i = first_sequence.front()
-	var tile_fg: Vector2i = first_sequence.back()
-	atlas.get_tile_data(tile_bg, 0).terrain = terrain_background
-	atlas.get_tile_data(tile_fg, 0).terrain = terrain_foreground
-
-
-## Unregisters all the tiles in an atlas and changes the size of the
-## individual sprites to accomodate a size.x by size.y grid of sprites.
-static func clear_and_resize_atlas(atlas: TileSetAtlasSource, size: Vector2i):
-	# Clear all tiles
-	atlas.texture_region_size = atlas.texture.get_size() + Vector2.ONE
-	atlas.clear_tiles_outside_texture()
-	# Resize the tiles
-	atlas.texture_region_size = atlas.texture.get_size() / Vector2(size)

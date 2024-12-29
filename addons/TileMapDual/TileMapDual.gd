@@ -20,7 +20,7 @@ func _ready() -> void:
 
 
 func _atlas_added(source_id: int, atlas: TileSetAtlasSource):
-	#TerrainDual.write_default_preset(_tileset_watcher.tile_set, atlas)
+	TerrainPreset.write_default_preset(_tileset_watcher.tile_set, atlas)
 	pass
 
 

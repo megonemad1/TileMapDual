@@ -10,31 +10,19 @@ extends TileMapLayer
 ## This is independent of tile size.
 var offset: Vector2
 
-## When a cell is modified in the parent TileMapDual,
-## the DisplayLayer needs to know which of its display cells need to be recomputed.
-## This Array stores the paths from the edited cell to the affected display cells.
-var world_to_affected_display_neighbors: Array
-
-## When a display cell needs to be recomputed,
-## the TerrainLayer needs to know which tiles surround it.
-## This Array stores the paths from the affected cell to the neighboring world cells.
-var display_to_world_neighbors: Array
-
 ## See TileSetWatcher.gd
 var _tileset_watcher: TileSetWatcher
 
 ## See TerrainDual.gd
-var _terrain: TerrainDual.TerrainLayer
+var _terrain: TerrainLayer
 
 func _init(
 	tileset_watcher: TileSetWatcher,
 	fields: Dictionary,
-	layer: TerrainDual.TerrainLayer
+	layer: TerrainLayer
 ) -> void:
 	#print('initializing Layer...')
 	offset = fields.offset
-	world_to_affected_display_neighbors = fields.world_to_affected_display_neighbors
-	display_to_world_neighbors = fields.display_to_world_neighbors
 	_tileset_watcher = tileset_watcher
 	_terrain = layer
 	tile_set = tileset_watcher.tile_set
@@ -54,8 +42,8 @@ func update_tiles_all(cache: TileCache) -> void:
 func update_tiles(cache: TileCache, updated_world_cells: Array) -> void:
 	#push_warning('updating tiles')
 	var already_updated := Set.new()
-	# The order of these two for loops does not matter.
-	for path: Array in world_to_affected_display_neighbors:
+	for path: Array in _terrain.display_to_world_neighbors:
+		path = path.map(Util.reverse_neighbor)
 		for world_cell: Vector2i in updated_world_cells:
 			var display_cell := follow_path(world_cell, path)
 			if already_updated.insert(display_cell):
@@ -65,7 +53,7 @@ func update_tiles(cache: TileCache, updated_world_cells: Array) -> void:
 ## Updates a specific world cell.
 func update_tile(cache: TileCache, cell: Vector2i) -> void:
 	var get_cell_at_path := func(path): return cache.get_terrain_at(follow_path(cell, path))
-	var true_neighborhood := display_to_world_neighbors.map(get_cell_at_path)
+	var true_neighborhood := _terrain.display_to_world_neighbors.map(get_cell_at_path)
 	var is_empty := true_neighborhood.all(func(terrain): return terrain == -1)
 	var terrain_neighborhood = true_neighborhood.map(normalize_terrain)
 	var is_invalid_neighborhood = terrain_neighborhood not in _terrain.rules
