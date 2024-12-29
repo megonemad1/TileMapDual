@@ -44,6 +44,8 @@ static func neighborhood_preset(
 	# All Horizontal neighborhoods can be transposed to Vertical
 	if neighborhood == TerrainDual.Neighborhood.TRIANGLE_VERTICAL:
 		out.size = Util.transpose_vec(out.size)
+		out.fg = Util.transpose_vec(out.fg)
+		out.bg = Util.transpose_vec(out.bg)
 		for seq in out.layers:
 			for i in seq.size():
 				seq[i] = Util.transpose_vec(seq[i])
@@ -83,7 +85,7 @@ const PRESETS := {
 		'Standard': {
 			'size': Vector2i(4, 4),
 			'bg': Vector2i(0, 0),
-			'fg': Vector2i(2, 0),
+			'fg': Vector2i(0, 2),
 			'layers': [
 				[ # v
 					Vector2i(0, 1),
@@ -110,7 +112,7 @@ const PRESETS := {
 		'Alternating': {
 			'size': Vector2i(4, 4),
 			'bg': Vector2i(0, 0),
-			'fg': Vector2i(2, 0),
+			'fg': Vector2i(0, 2),
 			'layers': [
 				[ # v
 					Vector2i(0, 0),
