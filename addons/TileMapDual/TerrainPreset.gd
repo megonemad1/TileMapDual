@@ -132,16 +132,14 @@ const PRESETS := {
 static func write_default_preset(tile_set: TileSet, atlas: TileSetAtlasSource) -> void:
 	#print('writing default')
 	var neighborhood := TerrainDual.tileset_neighborhood(tile_set)
-	var terrain_offset := _create_false_terrain_set(
+	var terrain := _create_false_terrain_set(
 		tile_set,
 		atlas.texture.resource_path.get_file()
 	)
 	write_preset(
 		atlas,
 		neighborhood,
-		neighborhood_preset(neighborhood),
-		terrain_offset + 0,
-		terrain_offset + 1,
+		terrain,
 	)
 
 
@@ -150,12 +148,14 @@ static func _create_false_terrain_set(tile_set: TileSet, terrain_name: String) -
 	if tile_set.get_terrain_sets_count() == 0:
 		tile_set.add_terrain_set()
 		tile_set.set_terrain_set_mode(0, TileSet.TERRAIN_MODE_MATCH_CORNERS)
-	var terrain_offset = tile_set.get_terrains_count(0)
+	var terrain = tile_set.get_terrains_count(0)
+	if terrain == 0:
+		tile_set.add_terrain(0)
+		tile_set.set_terrain_name(0, 0, "BG")
+		terrain += 1
 	tile_set.add_terrain(0)
-	tile_set.set_terrain_name(0, terrain_offset + 0, "BG -%s" % terrain_name)
-	tile_set.add_terrain(0)
-	tile_set.set_terrain_name(0, terrain_offset + 1, "FG -%s" % terrain_name)
-	return terrain_offset
+	tile_set.set_terrain_name(0, terrain, "FG -%s" % terrain_name)
+	return terrain
 
 
 ## Takes a preset and puts it onto the given atlas.
@@ -165,9 +165,9 @@ static func _create_false_terrain_set(tile_set: TileSet, terrain_name: String) -
 static func write_preset(
 	atlas: TileSetAtlasSource,
 	neighborhood: TerrainDual.Neighborhood,
-	preset: Dictionary,
-	terrain_background: int,
 	terrain_foreground: int,
+	terrain_background: int = 0,
+	preset: Dictionary = neighborhood_preset(neighborhood),
 ) -> void:
 	var layers: Array = TerrainDual.NEIGHBORHOOD_LAYERS[neighborhood]
 	#print('writing')
