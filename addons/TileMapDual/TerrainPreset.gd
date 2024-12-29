@@ -39,12 +39,12 @@ static func neighborhood_preset(
 	# TODO: test when the preset doesn't exist
 	var available_presets = PRESETS[topology]
 	if preset_name not in available_presets:
-		return {'size': Vector2i.ONE, 'sequences': []}
+		return {'size': Vector2i.ONE, 'layers': []}
 	var out: Dictionary = available_presets[preset_name].duplicate(true)
 	# All Horizontal neighborhoods can be transposed to Vertical
 	if neighborhood == TerrainDual.Neighborhood.TRIANGLE_VERTICAL:
 		out.size = Util.transpose_vec(out.size)
-		for seq in out.sequences:
+		for seq in out.layers:
 			for i in seq.size():
 				seq[i] = Util.transpose_vec(seq[i])
 	return out
@@ -55,7 +55,9 @@ const PRESETS := {
 	Topology.SQUARE: {
 		'Standard': {
 			'size': Vector2i(4, 4),
-			'sequences': [
+			'bg': Vector2i(0, 3),
+			'fg': Vector2i(2, 1),
+			'layers': [
 				[ # []
 					Vector2i(0, 3),
 					Vector2i(3, 3),
@@ -80,7 +82,36 @@ const PRESETS := {
 	Topology.TRIANGLE: {
 		'Standard': {
 			'size': Vector2i(4, 4),
-			'sequences': [
+			'bg': Vector2i(0, 0),
+			'fg': Vector2i(2, 0),
+			'layers': [
+				[ # v
+					Vector2i(0, 1),
+					Vector2i(2, 1),
+					Vector2i(3, 1),
+					Vector2i(1, 3),
+					Vector2i(1, 1),
+					Vector2i(3, 3),
+					Vector2i(2, 3),
+					Vector2i(0, 3),
+				],
+				[ # ^
+					Vector2i(0, 0),
+					Vector2i(2, 0),
+					Vector2i(3, 0),
+					Vector2i(1, 2),
+					Vector2i(1, 0),
+					Vector2i(3, 2),
+					Vector2i(2, 2),
+					Vector2i(0, 2),
+				],
+			]
+		},
+		'Alternating': {
+			'size': Vector2i(4, 4),
+			'bg': Vector2i(0, 0),
+			'fg': Vector2i(2, 0),
+			'layers': [
 				[ # v
 					Vector2i(0, 0),
 					Vector2i(2, 0),
@@ -117,7 +148,7 @@ static func write_default_preset(tile_set: TileSet, atlas: TileSetAtlasSource) -
 	)
 	write_preset(
 		atlas,
-		TerrainDual.NEIGHBORHOOD_LAYERS[neighborhood],
+		neighborhood,
 		neighborhood_preset(neighborhood),
 		terrain_offset + 0,
 		terrain_offset + 1,
@@ -143,17 +174,18 @@ static func _create_false_terrain_set(tile_set: TileSet, terrain_name: String) -
 ## - filters: the neighborhood filter
 static func write_preset(
 	atlas: TileSetAtlasSource,
-	filters: Array,
+	neighborhood: TerrainDual.Neighborhood,
 	preset: Dictionary,
 	terrain_background: int,
 	terrain_foreground: int,
 ) -> void:
+	var layers: Array = TerrainDual.NEIGHBORHOOD_LAYERS[neighborhood]
 	#print('writing')
 	clear_and_resize_atlas(atlas, preset.size)
 	# Set peering bits
-	var sequences: Array = preset.sequences
-	for j in filters.size():
-		var filter = filters[j]
+	var sequences: Array = preset.layers
+	for j in layers.size():
+		var filter = layers[j].terrain_neighbors
 		var sequence: Array = sequences[j]
 		for i in sequence.size():
 			var tile: Vector2i = sequence[i]
@@ -167,11 +199,8 @@ static func write_preset(
 				)
 				i >>= 1
 	# Set terrains
-	var first_sequence: Array = sequences.front()
-	var tile_bg: Vector2i = first_sequence.front()
-	var tile_fg: Vector2i = first_sequence.back()
-	atlas.get_tile_data(tile_bg, 0).terrain = terrain_background
-	atlas.get_tile_data(tile_fg, 0).terrain = terrain_foreground
+	atlas.get_tile_data(preset.bg, 0).terrain = terrain_background
+	atlas.get_tile_data(preset.fg, 0).terrain = terrain_foreground
 
 
 ## Unregisters all the tiles in an atlas and changes the size of the
