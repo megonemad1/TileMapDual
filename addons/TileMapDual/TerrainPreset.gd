@@ -2,18 +2,6 @@
 class_name TerrainPreset
 
 
-## Every corner CellNeighbor, in order.
-const NEIGHBORS: Array[TileSet.CellNeighbor] = [
-	TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
-	TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
-	TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
-	TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
-	TileSet.CELL_NEIGHBOR_LEFT_CORNER,
-	TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
-	TileSet.CELL_NEIGHBOR_TOP_CORNER,
-	TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
-]
-
 ## Maps a Neighborhood to a Topology.
 const NEIGHBORHOOD_TOPOLOGIES := {
 	TerrainDual.Neighborhood.SQUARE: Topology.SQUARE,
