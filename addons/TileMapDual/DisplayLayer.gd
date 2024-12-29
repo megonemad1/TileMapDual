@@ -14,12 +14,12 @@ var offset: Vector2
 var _tileset_watcher: TileSetWatcher
 
 ## See TerrainDual.gd
-var _terrain: TerrainDual.TerrainLayer
+var _terrain: TerrainLayer
 
 func _init(
 	tileset_watcher: TileSetWatcher,
 	fields: Dictionary,
-	layer: TerrainDual.TerrainLayer
+	layer: TerrainLayer
 ) -> void:
 	#print('initializing Layer...')
 	offset = fields.offset
