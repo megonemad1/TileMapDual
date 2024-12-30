@@ -36,11 +36,11 @@ func _register_tile(data: TileData, mapping: Dictionary) -> void:
 				"Expected neighborhood: %s" % [terrain_neighborhood.map(Util.neighbor_name)]
 			)
 		return
-	_register_mapping(terrain_neighbors, mapping)
+	_register_rule(terrain_neighbors, mapping)
 
 
 ## Register a new rule for a set of surrounding terrain neighbors
-func _register_mapping(terrain_neighbors: Array, mapping: Dictionary) -> void:
+func _register_rule(terrain_neighbors: Array, mapping: Dictionary) -> void:
 	var node := _rules
 	for terrain in terrain_neighbors:
 		if terrain not in node:
