@@ -59,7 +59,7 @@ func _register_tile(data: TileData, mapping: Dictionary) -> void:
 	_register_mapping(terrain_neighbors, mapping)
 
 
-## Register a new rule for a 
+## Register a new rule for a set of surrounding terrain neighbors
 func _register_mapping(terrain_neighbors: Array, mapping: Dictionary) -> void:
 	_rules[terrain_neighbors] = mapping
 
