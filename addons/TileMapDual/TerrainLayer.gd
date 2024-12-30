@@ -64,11 +64,6 @@ func _register_mapping(terrain_neighbors: Array, mapping: Dictionary) -> void:
 	_rules[terrain_neighbors] = mapping
 
 
-## Utility function for easier printing
-func _neighbors_to_dict(terrain_neighbors: Array) -> Dictionary:
-	return Util.arrays_to_dict(terrain_neighborhood.map(Util.neighbor_name), terrain_neighbors)
-
-
 const TILE_EMPTY: Dictionary = {'sid': - 1, 'tile': Vector2i(-1, -1)}
 ## Returns the tile that should be used based on the surrounding terrain neighbors
 func apply_rule(terrain_neighbors: Array) -> Dictionary:
@@ -84,3 +79,8 @@ func apply_rule(terrain_neighbors: Array) -> Dictionary:
 ## Coerces all empty tiles to have a terrain of 0.
 static func normalize_terrain(terrain):
 	return terrain if terrain != -1 else 0
+
+
+## Utility function for easier printing
+func _neighbors_to_dict(terrain_neighbors: Array) -> Dictionary:
+	return Util.arrays_to_dict(terrain_neighborhood.map(Util.neighbor_name), terrain_neighbors)
