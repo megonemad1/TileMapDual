@@ -35,13 +35,13 @@ enum Neighborhood {
 const NEIGHBORHOOD_LAYERS := {
 	Neighborhood.SQUARE: [
 		{ # []
-			'terrain_neighbors': [
+			'terrain_neighborhood': [
 				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
 			],
-			'display_to_world_neighbors': [
+			'display_to_world_neighborhood': [
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER],
 				[TileSet.CELL_NEIGHBOR_TOP_SIDE],
 				[TileSet.CELL_NEIGHBOR_LEFT_SIDE],
@@ -51,13 +51,13 @@ const NEIGHBORHOOD_LAYERS := {
 	],
 	Neighborhood.ISOMETRIC: [
 		{ # <>
-			'terrain_neighbors': [
+			'terrain_neighborhood': [
 				TileSet.CELL_NEIGHBOR_TOP_CORNER,
 				TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
 				TileSet.CELL_NEIGHBOR_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
 			],
-			'display_to_world_neighbors': [
+			'display_to_world_neighborhood': [
 				[TileSet.CELL_NEIGHBOR_TOP_CORNER],
 				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE],
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
@@ -67,24 +67,24 @@ const NEIGHBORHOOD_LAYERS := {
 	],
 	Neighborhood.TRIANGLE_HORIZONTAL: [
 		{ # v
-			'terrain_neighbors': [
+			'terrain_neighborhood': [
 				TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
 			],
-			'display_to_world_neighbors': [
+			'display_to_world_neighborhood': [
 				[],
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
 				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE],
 			],
 		},
 		{ # ^
-			'terrain_neighbors': [
+			'terrain_neighborhood': [
 				TileSet.CELL_NEIGHBOR_TOP_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
 			],
-			'display_to_world_neighbors': [
+			'display_to_world_neighborhood': [
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
 				[TileSet.CELL_NEIGHBOR_LEFT_SIDE],
 				[],
@@ -94,24 +94,24 @@ const NEIGHBORHOOD_LAYERS := {
 	# TODO: this is just TRIANGLE_HORIZONTAL but transposed. this can be refactored.
 	Neighborhood.TRIANGLE_VERTICAL: [
 		{ # >
-			'terrain_neighbors': [
+			'terrain_neighborhood': [
 				TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
 			],
-			'display_to_world_neighbors': [
+			'display_to_world_neighborhood': [
 				[],
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
 				[TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_SIDE],
 			],
 		},
 		{ # <
-			'terrain_neighbors': [
+			'terrain_neighborhood': [
 				TileSet.CELL_NEIGHBOR_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
 			],
-			'display_to_world_neighbors': [
+			'display_to_world_neighborhood': [
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
 				[TileSet.CELL_NEIGHBOR_TOP_SIDE],
 				[],
