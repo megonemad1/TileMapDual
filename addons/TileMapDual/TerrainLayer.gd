@@ -11,19 +11,7 @@ var terrain_neighborhood: Array = []
 ## This Array stores the paths from the affected cell to the neighboring world cells.
 var display_to_world_neighborhood: Array
 
-# TODO: support 'any' connections
-## rules: Dictionary{
-##   key: Condition = The terrains that surround this tile.
-##   value: {
-##     'sid': int = The Source ID of this tile.
-##     'tile': Vector2i = The coordinates of this tile in its Atlas.
-##   } = The sprite that will be chosen when the condition is satisfied.
-## }
-##
-## Condition: Array[
-##   type: int = The terrain found at this position in the filter.
-##   size = filter.size()
-## ]
+# TODO: document
 var _rules: Dictionary = {}
 
 
@@ -48,20 +36,25 @@ func _register_tile(data: TileData, mapping: Dictionary) -> void:
 				"Expected neighborhood: %s" % [terrain_neighborhood.map(Util.neighbor_name)]
 			)
 		return
-	if terrain_neighbors in _rules:
-		var prev_mapping = _rules[terrain_neighbors]
+	_register_mapping(terrain_neighbors, mapping)
+
+
+## Register a new rule for a set of surrounding terrain neighbors
+func _register_mapping(terrain_neighbors: Array, mapping: Dictionary) -> void:
+	var node := _rules
+	for terrain in terrain_neighbors:
+		if terrain not in node:
+			node[terrain] = {}
+		node = node[terrain]
+	if 'mapping' in node:
+		var prev_mapping = node.mapping
 		push_warning(
 			"2 different tiles in this TileSet have the same Terrain neighbors:\n" +
 			"Neighbor Configuration: %s\n" % [_neighbors_to_dict(terrain_neighbors)] +
 			"1st: %s\n" % [prev_mapping] +
 			"2nd: %s" % [mapping]
 		)
-	_register_mapping(terrain_neighbors, mapping)
-
-
-## Register a new rule for a set of surrounding terrain neighbors
-func _register_mapping(terrain_neighbors: Array, mapping: Dictionary) -> void:
-	_rules[terrain_neighbors] = mapping
+	node.mapping = mapping
 
 
 const TILE_EMPTY: Dictionary = {'sid': - 1, 'tile': Vector2i(-1, -1)}
@@ -71,9 +64,17 @@ func apply_rule(terrain_neighbors: Array) -> Dictionary:
 	if is_empty:
 		return TILE_EMPTY
 	var normalized_neighbors = terrain_neighbors.map(normalize_terrain)
-	if normalized_neighbors not in _rules:
+	
+	var node := _rules
+	for terrain in normalized_neighbors:
+		if terrain not in node:
+			terrain = 0
+		if terrain not in node:
+			return TILE_EMPTY
+		node = node[terrain]
+	if 'mapping' not in node:
 		return TILE_EMPTY
-	return _rules[normalized_neighbors]
+	return node.mapping
 
 
 ## Coerces all empty tiles to have a terrain of 0.
