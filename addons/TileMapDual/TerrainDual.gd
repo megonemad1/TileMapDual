@@ -138,7 +138,7 @@ func _init(tileset_watcher: TileSetWatcher) -> void:
 
 ## Emitted when any of the terrains change.
 ## NOTE: Prefer connecting to TerrainDual.changed instead of TileSetWatcher.terrains_changed.
-func _changed():
+func _changed() -> void:
 	#print('SIGNAL EMITTED: changed(%s)' % {})
 	read_tileset(_tileset_watcher.tile_set)
 	emit_changed()

@@ -20,7 +20,8 @@ func _init(tileset_watcher: TileSetWatcher) -> void:
 ## Activates when the TerrainDual changes.
 func _terrain_changed():
 	_delete_layers()
-	_create_layers()
+	if _tileset_watcher.tile_set != null:
+		_create_layers()
 
 
 ## Emitted when the tiles in the map have been edited.

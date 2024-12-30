@@ -6,64 +6,47 @@ extends Resource
 var tile_set: TileSet
 ## Caches the previous tile_size to see when it changes.
 var tile_size: Vector2i
-## Caches the previous result of Display.tileset_grid_shape(tile_set) to see when it changes.
+## caches the previous result of display.tileset_grid_shape(tile_set) to see when it changes.
 var grid_shape: Display.GridShape
+
 func _init(tile_set: TileSet) -> void:
-	# TODO: inline all functions here except atlas added
-	tileset_deleted.connect(_tileset_deleted, 1)
-	tileset_created.connect(_tileset_created, 1)
-	tileset_resized.connect(_tileset_resized, 1)
-	tileset_reshaped.connect(_tileset_reshaped, 1)
+	# tileset_deleted.connect(func(): print('tileset_deleted'), 1)
+	# tileset_created.connect(func(): print('tileset_created'), 1)
+	# tileset_resized.connect(func(): print('tileset_resized'), 1)
+	# tileset_reshaped.connect(func(): print('tileset_reshaped'), 1)
 	atlas_added.connect(_atlas_added, 1)
-	terrains_changed.connect(_terrains_changed, 1)
 	update(tile_set)
 
 
 var _flag_tileset_deleted := false
 ## Emitted when the parent TileMapDual's tile_set is cleared or replaced.
 signal tileset_deleted
-func _tileset_deleted():
-	#print('SIGNAL EMITTED: tileset_deleted(%s)' % {})
-	pass
 
 var _flag_tileset_created := false
 ## Emitted when the parent TileMapDual's tile_set is created or replaced.
 signal tileset_created
-func _tileset_created():
-	#print('SIGNAL EMITTED: tileset_created(%s)' % {})
-	pass
 
 var _flag_tileset_resized := false
 ## Emitted when tile_set.tile_size is changed.
 signal tileset_resized
-func _tileset_resized():
-	#print('SIGNAL EMITTED: tileset_resized(%s)' % {})
-	pass
 
 var _flag_tileset_reshaped := false
 ## Emitted when the GridShape of the TileSet would be different.
 signal tileset_reshaped
-func _tileset_reshaped():
-	#print('SIGNAL EMITTED: tileset_reshaped(%s)' % {})
-	pass
 
 var _flag_atlas_added := false
 ## Emitted when a new Atlas is added to this TileSet.
 ## Does not react to Scenes being added to the TileSet.
 signal atlas_added(source_id: int, atlas: TileSetAtlasSource)
-func _atlas_added(source_id: int, atlas: TileSetAtlasSource):
+func _atlas_added(source_id: int, atlas: TileSetAtlasSource) -> void:
 	_flag_atlas_added = true
 	#print('SIGNAL EMITTED: atlas_added(%s)' % {'source_id': source_id, 'atlas': atlas})
-	pass
 
 var _flag_terrains_changed := false
 ## Emitted when an atlas is added or removed,
 ## or when the terrains change in one of the Atlases.
 ## NOTE: Prefer connecting to TerrainDual.changed instead of TileSetWatcher.terrains_changed.
 signal terrains_changed
-func _terrains_changed():
-	#print('SIGNAL EMITTED: terrains_changed(%s)' % {})
-	pass
 
 
 ## Checks if anything about the concerned TileMapDual's tile_set changed.
@@ -77,7 +60,8 @@ func update(tile_set: TileSet) -> void:
 ## Must only be run once per frame.
 func check_flags() -> void:
 	if _flag_tileset_changed:
-		_check_tileset()
+		_flag_tileset_changed = false
+		_update_tileset()
 	if _flag_tileset_deleted:
 		_flag_tileset_deleted = false
 		_flag_tileset_reshaped = true
@@ -127,7 +111,7 @@ func _set_tileset_changed() -> void:
 
 ## Called when _flag_tileset_changed.
 ## Provides more detail about what changed.
-func _check_tileset() -> void:
+func _update_tileset() -> void:
 	var tile_size = tile_set.tile_size
 	if self.tile_size != tile_size:
 		self.tile_size = tile_size
@@ -136,7 +120,7 @@ func _check_tileset() -> void:
 	if self.grid_shape != grid_shape:
 		self.grid_shape = grid_shape
 		_flag_tileset_reshaped = true
-	_check_tileset_atlases()
+	_update_tileset_atlases()
 
 
 # Cached variables from the previous frame
@@ -146,10 +130,9 @@ var _cached_sids := Set.new()
 # TODO: detect automatic tile creation
 ## Checks if new atlases have been added.
 ## Does not check which ones were deleted.
-func _check_tileset_atlases():
+func _update_tileset_atlases() -> void:
 	# Update all tileset sources
 	var source_count := tile_set.get_source_count()
-	var terrain_set_count := tile_set.get_terrain_sets_count()
 
 	# Only if an asset was added or removed
 	# FIXME?: may break on add+remove in 1 frame
