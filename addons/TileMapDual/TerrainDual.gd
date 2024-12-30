@@ -182,6 +182,7 @@ func read_tile(atlas: TileSetAtlasSource, sid: int, tile: Vector2i) -> void:
 		push_warning(
 			"The tile at %s has a terrain set of %d. Only terrain set 0 is supported." % [mapping, terrain_set]
 		)
+		return
 	var terrain := data.terrain
 	if terrain != -1:
 		if terrain in terrains:
@@ -195,4 +196,4 @@ func read_tile(atlas: TileSetAtlasSource, sid: int, tile: Vector2i) -> void:
 	var filters = NEIGHBORHOOD_LAYERS[neighborhood]
 	for i in layers.size():
 		var layer: TerrainLayer = layers[i]
-		layer.read_tile(data, mapping)
+		layer._register_tile(data, mapping)

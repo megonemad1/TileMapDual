@@ -55,12 +55,11 @@ func update_tile(cache: TileCache, cell: Vector2i) -> void:
 	var get_cell_at_path := func(path): return cache.get_terrain_at(follow_path(cell, path))
 	var true_neighborhood := _terrain.display_to_world_neighbors.map(get_cell_at_path)
 	var is_empty := true_neighborhood.all(func(terrain): return terrain == -1)
-	var terrain_neighborhood = true_neighborhood.map(normalize_terrain)
-	var is_invalid_neighborhood = terrain_neighborhood not in _terrain.rules
-	if is_empty or is_invalid_neighborhood:
+	if is_empty:
 		erase_cell(cell)
 		return
-	var mapping: Dictionary = _terrain.rules[terrain_neighborhood]
+	var terrain_neighborhood = true_neighborhood.map(normalize_terrain)
+	var mapping: Dictionary = _terrain.apply_rule(terrain_neighborhood)
 	var sid: int = mapping.sid
 	var tile: Vector2i = mapping.tile
 	set_cell(cell, sid, tile)

@@ -1,4 +1,4 @@
-## A set of rules usable by a single DisplayLayer.
+## A set of _rules usable by a single DisplayLayer.
 class_name TerrainLayer
 extends Resource
 
@@ -11,6 +11,7 @@ var terrain_neighbors: Array = []
 ## This Array stores the paths from the affected cell to the neighboring world cells.
 var display_to_world_neighbors: Array
 
+# TODO: support 'any' connections
 ## rules: Dictionary{
 ##   key: Condition = The terrains that surround this tile.
 ##   value: {
@@ -23,15 +24,22 @@ var display_to_world_neighbors: Array
 ##   type: int = The terrain found at this position in the filter.
 ##   size = filter.size()
 ## ]
-var rules: Dictionary = {}
+var _rules: Dictionary = {}
+
+
+func apply_rule(condition: Array) -> Dictionary:
+	if condition not in _rules:
+		return {'sid': - 1, 'tile': Vector2i(-1, -1)}
+	return _rules[condition]
+
 
 func _init(fields: Dictionary) -> void:
 	self.terrain_neighbors = fields.terrain_neighbors
 	self.display_to_world_neighbors = fields.display_to_world_neighbors
 
 
-## Add a new rule for a specific tile in an atlas.
-func read_tile(data: TileData, mapping: Dictionary) -> void:
+## Register a new rule for a specific tile in an atlas.
+func _register_tile(data: TileData, mapping: Dictionary) -> void:
 	if data.terrain_set != 0:
 		# This was already handled as an error in the parent TerrainDual
 		return
@@ -46,15 +54,15 @@ func read_tile(data: TileData, mapping: Dictionary) -> void:
 				"Expected neighbors: %s" % [terrain_neighbors.map(Util.neighbor_name)]
 			)
 		return
-	if condition in rules:
-		var prev_mapping = rules[condition]
+	if condition in _rules:
+		var prev_mapping = _rules[condition]
 		push_warning(
 			"2 different tiles in this TileSet have the same Terrain neighborhood:\n" +
 			"Condition: %s\n" % [_condition_to_dict(condition)] +
 			"1st: %s\n" % [prev_mapping] +
 			"2nd: %s" % [mapping]
 		)
-	rules[condition] = mapping
+	_rules[condition] = mapping
 
 ## Utility function for easier printing
 func _condition_to_dict(condition: Array) -> Dictionary:
