@@ -147,7 +147,7 @@ static func _init_terrains(tile_set: TileSet) -> void:
 	tile_set.add_terrain_set()
 	tile_set.set_terrain_set_mode(0, TileSet.TERRAIN_MODE_MATCH_CORNERS)
 	tile_set.add_terrain(0)
-	tile_set.set_terrain_name(0, 0, "BG")
+	tile_set.set_terrain_name(0, 0, "<any>")
 	tile_set.set_terrain_color(0, 0, Color.VIOLET)
 
 

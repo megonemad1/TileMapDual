@@ -1,7 +1,7 @@
 ## A Node designed to hold and manage up to 2 DisplayLayer children.
 ## See DisplayLayer.gd for details.
 class_name Display
-extends Node
+extends Node2D
 
 
 ## See TerrainDual.gd
