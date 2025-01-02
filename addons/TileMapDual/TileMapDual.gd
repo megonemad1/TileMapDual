@@ -20,7 +20,7 @@ func _ready() -> void:
 
 
 func _atlas_added(source_id: int, atlas: TileSetAtlasSource):
-	TerrainPreset.write_default_preset(_tileset_watcher.tile_set, atlas)
+	# TerrainPreset.write_default_preset(_tileset_watcher.tile_set, atlas)
 	pass
 
 
@@ -64,6 +64,7 @@ func draw_cell(cell: Vector2i, terrain: int = 1) -> void:
 	var terrains := _display.terrain.terrains
 	if terrain not in terrains:
 		erase_cell(cell)
+		changed.emit()
 		return
 	var tile_to_use: Dictionary = terrains[terrain]
 	var sid: int = tile_to_use.sid
