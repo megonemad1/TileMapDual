@@ -35,13 +35,13 @@ enum Neighborhood {
 const NEIGHBORHOOD_LAYERS := {
 	Neighborhood.SQUARE: [
 		{ # []
-			'terrain_neighbors': [
+			'terrain_neighborhood': [
 				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
 			],
-			'display_to_world_neighbors': [
+			'display_to_world_neighborhood': [
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER],
 				[TileSet.CELL_NEIGHBOR_TOP_SIDE],
 				[TileSet.CELL_NEIGHBOR_LEFT_SIDE],
@@ -51,13 +51,13 @@ const NEIGHBORHOOD_LAYERS := {
 	],
 	Neighborhood.ISOMETRIC: [
 		{ # <>
-			'terrain_neighbors': [
+			'terrain_neighborhood': [
 				TileSet.CELL_NEIGHBOR_TOP_CORNER,
 				TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
 				TileSet.CELL_NEIGHBOR_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
 			],
-			'display_to_world_neighbors': [
+			'display_to_world_neighborhood': [
 				[TileSet.CELL_NEIGHBOR_TOP_CORNER],
 				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE],
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
@@ -67,24 +67,24 @@ const NEIGHBORHOOD_LAYERS := {
 	],
 	Neighborhood.TRIANGLE_HORIZONTAL: [
 		{ # v
-			'terrain_neighbors': [
+			'terrain_neighborhood': [
 				TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
 			],
-			'display_to_world_neighbors': [
+			'display_to_world_neighborhood': [
 				[],
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
 				[TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE],
 			],
 		},
 		{ # ^
-			'terrain_neighbors': [
+			'terrain_neighborhood': [
 				TileSet.CELL_NEIGHBOR_TOP_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
 			],
-			'display_to_world_neighbors': [
+			'display_to_world_neighborhood': [
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
 				[TileSet.CELL_NEIGHBOR_LEFT_SIDE],
 				[],
@@ -94,24 +94,24 @@ const NEIGHBORHOOD_LAYERS := {
 	# TODO: this is just TRIANGLE_HORIZONTAL but transposed. this can be refactored.
 	Neighborhood.TRIANGLE_VERTICAL: [
 		{ # >
-			'terrain_neighbors': [
+			'terrain_neighborhood': [
 				TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
 			],
-			'display_to_world_neighbors': [
+			'display_to_world_neighborhood': [
 				[],
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
 				[TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_SIDE],
 			],
 		},
 		{ # <
-			'terrain_neighbors': [
+			'terrain_neighborhood': [
 				TileSet.CELL_NEIGHBOR_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
 			],
-			'display_to_world_neighbors': [
+			'display_to_world_neighborhood': [
 				[TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE],
 				[TileSet.CELL_NEIGHBOR_TOP_SIDE],
 				[],
@@ -138,7 +138,7 @@ func _init(tileset_watcher: TileSetWatcher) -> void:
 
 ## Emitted when any of the terrains change.
 ## NOTE: Prefer connecting to TerrainDual.changed instead of TileSetWatcher.terrains_changed.
-func _changed():
+func _changed() -> void:
 	#print('SIGNAL EMITTED: changed(%s)' % {})
 	read_tileset(_tileset_watcher.tile_set)
 	emit_changed()
@@ -182,6 +182,7 @@ func read_tile(atlas: TileSetAtlasSource, sid: int, tile: Vector2i) -> void:
 		push_warning(
 			"The tile at %s has a terrain set of %d. Only terrain set 0 is supported." % [mapping, terrain_set]
 		)
+		return
 	var terrain := data.terrain
 	if terrain != -1:
 		if terrain in terrains:
@@ -195,4 +196,4 @@ func read_tile(atlas: TileSetAtlasSource, sid: int, tile: Vector2i) -> void:
 	var filters = NEIGHBORHOOD_LAYERS[neighborhood]
 	for i in layers.size():
 		var layer: TerrainLayer = layers[i]
-		layer.read_tile(data, mapping)
+		layer._register_tile(data, mapping)

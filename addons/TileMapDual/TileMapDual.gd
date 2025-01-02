@@ -8,11 +8,11 @@ var _tileset_watcher: TileSetWatcher
 var _display: Display
 func _ready() -> void:
 	_tileset_watcher = TileSetWatcher.new(tile_set)
-	_tileset_watcher.atlas_added.connect(_atlas_added, 1)
 	_display = Display.new(_tileset_watcher)
 	add_child(_display)
 	_make_self_invisible()
 	if Engine.is_editor_hint():
+		_tileset_watcher.atlas_added.connect(_atlas_added, 1)
 		set_process(true)
 	else: # Run in-game using signals for better performance
 		set_process(false)
@@ -20,7 +20,7 @@ func _ready() -> void:
 
 
 func _atlas_added(source_id: int, atlas: TileSetAtlasSource):
-	TerrainPreset.write_default_preset(_tileset_watcher.tile_set, atlas)
+	# TerrainPreset.write_default_preset(_tileset_watcher.tile_set, atlas)
 	pass
 
 
@@ -64,6 +64,7 @@ func draw_cell(cell: Vector2i, terrain: int = 1) -> void:
 	var terrains := _display.terrain.terrains
 	if terrain not in terrains:
 		erase_cell(cell)
+		changed.emit()
 		return
 	var tile_to_use: Dictionary = terrains[terrain]
 	var sid: int = tile_to_use.sid

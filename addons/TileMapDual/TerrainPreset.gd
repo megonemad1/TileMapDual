@@ -132,30 +132,33 @@ const PRESETS := {
 static func write_default_preset(tile_set: TileSet, atlas: TileSetAtlasSource) -> void:
 	#print('writing default')
 	var neighborhood := TerrainDual.tileset_neighborhood(tile_set)
-	var terrain_offset := _create_false_terrain_set(
+	var terrain := _new_terrain(
 		tile_set,
 		atlas.texture.resource_path.get_file()
 	)
 	write_preset(
 		atlas,
 		neighborhood,
-		neighborhood_preset(neighborhood),
-		terrain_offset + 0,
-		terrain_offset + 1,
+		terrain,
 	)
 
+## Creates terrain set 0 (the primary terrain set) and terrain 0 (the 'any' terrain)
+static func _init_terrains(tile_set: TileSet) -> void:
+	tile_set.add_terrain_set()
+	tile_set.set_terrain_set_mode(0, TileSet.TERRAIN_MODE_MATCH_CORNERS)
+	tile_set.add_terrain(0)
+	tile_set.set_terrain_name(0, 0, "<any>")
+	tile_set.set_terrain_color(0, 0, Color.VIOLET)
 
-## Adds 2 new terrain types to terrain set 0 for the sprites to use.
-static func _create_false_terrain_set(tile_set: TileSet, terrain_name: String) -> int:
+
+## Adds a new terrain type to terrain set 0 for the sprites to use.
+static func _new_terrain(tile_set: TileSet, terrain_name: String) -> int:
 	if tile_set.get_terrain_sets_count() == 0:
-		tile_set.add_terrain_set()
-		tile_set.set_terrain_set_mode(0, TileSet.TERRAIN_MODE_MATCH_CORNERS)
-	var terrain_offset = tile_set.get_terrains_count(0)
+		_init_terrains(tile_set)
+	var terrain := tile_set.get_terrains_count(0)
 	tile_set.add_terrain(0)
-	tile_set.set_terrain_name(0, terrain_offset + 0, "BG -%s" % terrain_name)
-	tile_set.add_terrain(0)
-	tile_set.set_terrain_name(0, terrain_offset + 1, "FG -%s" % terrain_name)
-	return terrain_offset
+	tile_set.set_terrain_name(0, terrain, "FG -%s" % terrain_name)
+	return terrain
 
 
 ## Takes a preset and puts it onto the given atlas.
@@ -165,9 +168,9 @@ static func _create_false_terrain_set(tile_set: TileSet, terrain_name: String) -
 static func write_preset(
 	atlas: TileSetAtlasSource,
 	neighborhood: TerrainDual.Neighborhood,
-	preset: Dictionary,
-	terrain_background: int,
 	terrain_foreground: int,
+	terrain_background: int = 0,
+	preset: Dictionary = neighborhood_preset(neighborhood),
 ) -> void:
 	var layers: Array = TerrainDual.NEIGHBORHOOD_LAYERS[neighborhood]
 	#print('writing')
@@ -175,14 +178,14 @@ static func write_preset(
 	# Set peering bits
 	var sequences: Array = preset.layers
 	for j in layers.size():
-		var filter = layers[j].terrain_neighbors
+		var terrain_neighborhood = layers[j].terrain_neighborhood
 		var sequence: Array = sequences[j]
 		for i in sequence.size():
 			var tile: Vector2i = sequence[i]
 			atlas.create_tile(tile)
 			var data := atlas.get_tile_data(tile, 0)
 			data.terrain_set = 0
-			for neighbor in filter:
+			for neighbor in terrain_neighborhood:
 				data.set_terrain_peering_bit(
 					neighbor,
 					[terrain_background, terrain_foreground][i & 1]
@@ -195,7 +198,7 @@ static func write_preset(
 
 ## Unregisters all the tiles in an atlas and changes the size of the
 ## individual sprites to accomodate a size.x by size.y grid of sprites.
-static func clear_and_resize_atlas(atlas: TileSetAtlasSource, size: Vector2i):
+static func clear_and_resize_atlas(atlas: TileSetAtlasSource, size: Vector2i) -> void:
 	# Clear all tiles
 	atlas.texture_region_size = atlas.texture.get_size() + Vector2.ONE
 	atlas.clear_tiles_outside_texture()
