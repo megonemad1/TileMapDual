@@ -1,3 +1,6 @@
+## Watches a TileSetAtlasSource for changes.
+## Causes its 'parent' TileSetWatcher to emit terrains_changed when the atlas changes.
+## Also emits parent.atlas_autotiled when it thinks the user auto-generated atlas tiles.
 class_name AtlasWatcher
 
 ## The TileSetWatcher that created this AtlasWatcher. Used to send signals back.
