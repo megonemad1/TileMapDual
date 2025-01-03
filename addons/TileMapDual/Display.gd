@@ -58,7 +58,7 @@ func update(layer: TileMapLayer):
 		return
 	var current := TileCache.new()
 	current.compute(_tileset_watcher.tile_set, layer, cached_cells)
-	var updated := current.diff(cached_cells)
+	var updated := current.xor(cached_cells)
 	cached_cells = current
 	if not updated.is_empty():
 		#print(updated)

@@ -49,8 +49,8 @@ func compute(tile_set: TileSet, layer: TileMapLayer, cache: TileCache) -> void:
 		cells[cell] = {'sid': sid, 'tile': tile, 'terrain': data.terrain}
 
 
-## Returns the difference between two tile caches
-func diff(other: TileCache) -> Array[Vector2i]:
+## Returns the symmetric difference (xor) of two tile caches.
+func xor(other: TileCache) -> Array[Vector2i]:
 	var out: Array[Vector2i] = []
 	for key in cells:
 		if key not in other.cells or cells[key].terrain != other.cells[key].terrain:
