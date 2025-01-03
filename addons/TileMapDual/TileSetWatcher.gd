@@ -42,6 +42,12 @@ func _atlas_added(source_id: int, atlas: TileSetAtlasSource) -> void:
 	_flag_atlas_added = true
 	#print('SIGNAL EMITTED: atlas_added(%s)' % {'source_id': source_id, 'atlas': atlas})
 
+
+## Emitted when the watcher thinks that "Yes" was clicked for:
+## 'Would you like to automatically create tiles in the atlas?'
+signal atlas_autotiled(source_id: int, atlas: TileSetAtlasSource)
+
+
 var _flag_terrains_changed := false
 ## Emitted when an atlas is added or removed,
 ## or when the terrains change in one of the Atlases.
@@ -126,7 +132,7 @@ func _update_tileset() -> void:
 # Cached variables from the previous frame
 # These are used to compare what changed between frames
 var _cached_source_count: int = 0
-var _cached_sids := Set.new()
+var _cached_sids := {}
 # TODO: detect automatic tile creation
 ## Checks if new atlases have been added.
 ## Does not check which ones were deleted.
@@ -141,11 +147,11 @@ func _update_tileset_atlases() -> void:
 	_cached_source_count = source_count
 
 	# Process the new atlases in the TileSet
-	var sids := Set.new()
+	var sids := {}
 	for i in source_count:
 		var sid: int = tile_set.get_source_id(i)
-		sids.insert(sid)
-		if _cached_sids.has(sid):
+		if sid in _cached_sids:
+			sids[sid] = _cached_sids[sid]
 			continue
 		var source: TileSetSource = tile_set.get_source(sid)
 		if source is not TileSetAtlasSource:
@@ -153,9 +159,9 @@ func _update_tileset_atlases() -> void:
 				"Non-Atlas TileSet found at index %i, source id %i.\n" % [i, source] +
 				"Dual Grids only support Atlas TileSets."
 			)
+			sids[sid] = null
 			continue
 		var atlas: TileSetAtlasSource = source
-		atlas_added.emit(sid, atlas)
 		# FIXME?: check if this needs to be disconnected
 		# SETUP:
 		# - add logging to check which Watcher's flag was changed
@@ -168,7 +174,8 @@ func _update_tileset_atlases() -> void:
 		#     this could either cause the flag to happen multiple times,
 		#     or it could stay at 2 watchers.
 		#   - if 1 watcher was flagged, that is ok
-		atlas.changed.connect(func(): _flag_terrains_changed = true, 1)
+		sids[sid] = AtlasWatcher.new(self, sid, atlas)
+		atlas_added.emit(sid, atlas)
 	_flag_terrains_changed = true
 	# FIXME?: find which sid's were deleted
 	_cached_sids = sids
