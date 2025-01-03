@@ -12,16 +12,16 @@ func _ready() -> void:
 	add_child(_display)
 	_make_self_invisible()
 	if Engine.is_editor_hint():
-		_tileset_watcher.atlas_added.connect(_atlas_added, 1)
+		_tileset_watcher.atlas_autotiled.connect(_atlas_autotiled, 1)
 		set_process(true)
 	else: # Run in-game using signals for better performance
 		set_process(false)
 		changed.connect(_changed, 1)
 
 
-func _atlas_added(source_id: int, atlas: TileSetAtlasSource):
-	# TerrainPreset.write_default_preset(_tileset_watcher.tile_set, atlas)
-	pass
+## Automatically generate terrains when the atlas is initialized.
+func _atlas_autotiled(source_id: int, atlas: TileSetAtlasSource):
+	TerrainPreset.write_default_preset(tile_set, atlas)
 
 
 ## Makes the main world grid invisible.

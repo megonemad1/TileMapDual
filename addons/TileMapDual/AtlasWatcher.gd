@@ -1,5 +1,6 @@
 class_name AtlasWatcher
 
+# Arguments passed to the Watcher, stored.
 var parent: TileSetWatcher
 var sid: int
 var atlas: TileSetAtlasSource
@@ -44,7 +45,8 @@ func _detect_autogen() -> void:
 		for x in size.x:
 			if atlas.has_tile(Vector2i(x, y)) != expected_tiles[y][x]:
 				return
-	TerrainPreset.write_default_preset(parent.tile_set, atlas)
+	parent.atlas_autotiled.emit(sid, atlas)
+
 
 func _atlas_changed() -> void:
 	parent._flag_terrains_changed = true

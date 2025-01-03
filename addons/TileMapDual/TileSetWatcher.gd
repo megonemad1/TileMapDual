@@ -162,8 +162,6 @@ func _update_tileset_atlases() -> void:
 			sids[sid] = null
 			continue
 		var atlas: TileSetAtlasSource = source
-		sids[sid] = AtlasWatcher.new(self, sid, atlas)
-		atlas_added.emit(sid, atlas)
 		# FIXME?: check if this needs to be disconnected
 		# SETUP:
 		# - add logging to check which Watcher's flag was changed
@@ -176,6 +174,8 @@ func _update_tileset_atlases() -> void:
 		#     this could either cause the flag to happen multiple times,
 		#     or it could stay at 2 watchers.
 		#   - if 1 watcher was flagged, that is ok
+		sids[sid] = AtlasWatcher.new(self, sid, atlas)
+		atlas_added.emit(sid, atlas)
 	_flag_terrains_changed = true
 	# FIXME?: find which sid's were deleted
 	_cached_sids = sids
