@@ -1,52 +1,43 @@
 class_name AtlasWatcher
 
-# Arguments passed to the Watcher, stored.
+## The TileSetWatcher that created this AtlasWatcher. Used to send signals back.
 var parent: TileSetWatcher
-var sid: int
-var atlas: TileSetAtlasSource
 
-var size: Vector2i
-var expected_tiles: Array[Array]
+## The Source ID of `self.atlas`.
+var sid: int
+
+## The atlas to be watched for changes.
+var atlas: TileSetAtlasSource
 
 func _init(parent: TileSetWatcher, sid: int, atlas: TileSetAtlasSource) -> void:
 	self.parent = parent
 	self.sid = sid
 	self.atlas = atlas
-	_compute_expected_tiles()
 	atlas.changed.connect(_atlas_changed, ConnectFlags.CONNECT_DEFERRED)
 	atlas.changed.connect(_detect_autogen, ConnectFlags.CONNECT_DEFERRED | ConnectFlags.CONNECT_ONE_SHOT)
 
 
-func _compute_expected_tiles() -> void:
-	size = Vector2i(atlas.texture.get_size()) / atlas.texture_region_size
-	var image := atlas.texture.get_image()
-	expected_tiles = []
-	for y in size.y:
-		var row = []
-		for x in size.x:
-			row.push_back(not tile_is_empty(image, Vector2i(x, y)))
-		expected_tiles.push_back(row)
-
-
-## Returns true if the texture has no opaque cells in the specified tile coordinates.
-func tile_is_empty(image: Image, tile: Vector2i) -> bool:
+## Returns true if the texture has any opaque pixels in the specified tile coordinates.
+func nonempty_tile(image: Image, tile: Vector2i) -> bool:
 	# We cannot use atlas.get_tile_texture_region(tile) as it fails on unregistered tiles.
 	var region := Rect2i(tile * atlas.texture_region_size, atlas.texture_region_size)
 	var sprite := image.get_region(region)
-	return sprite.is_invisible()
+	return not sprite.is_invisible()
 
 
 ## Called once, and only once, at the end of the first frame that a texture is created.
 func _detect_autogen() -> void:
 	var size := Vector2i(atlas.texture.get_size()) / atlas.texture_region_size
-	if size != self.size:
-		return
+	var image := atlas.texture.get_image()
+	var expected_tiles := []
 	for y in size.y:
 		for x in size.x:
-			if atlas.has_tile(Vector2i(x, y)) != expected_tiles[y][x]:
+			var tile := Vector2i(x, y)
+			if atlas.has_tile(tile) != nonempty_tile(image, tile):
 				return
 	parent.atlas_autotiled.emit(sid, atlas)
 
 
+## Called every time the atlas changes. Simply flags that terrains have changed.
 func _atlas_changed() -> void:
 	parent._flag_terrains_changed = true
