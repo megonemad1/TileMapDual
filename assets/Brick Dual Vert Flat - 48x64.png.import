@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://0i6y8vo4yv57"
-path="res://.godot/imported/Hex Dual Hori Flat - 64x48tri 64x64hex.png-003883a6eae9ede753b925dda4750da8.ctex"
+uid="uid://cinoofd3plrj5"
+path="res://.godot/imported/Brick Dual Vert Flat - 48x64.png-43bf300a5661eecbeab13b0fb56091a2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Hex Dual Hori Flat - 64x48tri 64x64hex.png"
-dest_files=["res://.godot/imported/Hex Dual Hori Flat - 64x48tri 64x64hex.png-003883a6eae9ede753b925dda4750da8.ctex"]
+source_file="res://assets/Brick Dual Vert Flat - 48x64.png"
+dest_files=["res://.godot/imported/Brick Dual Vert Flat - 48x64.png-43bf300a5661eecbeab13b0fb56091a2.ctex"]
 
 [params]
 

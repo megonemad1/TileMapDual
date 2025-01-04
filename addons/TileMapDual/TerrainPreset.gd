@@ -77,6 +77,35 @@ const PRESETS := {
 			'layers': [
 				[ # v
 					Vector2i(0, 1),
+					Vector2i(2, 3),
+					Vector2i(3, 1),
+					Vector2i(1, 3),
+					Vector2i(1, 1),
+					Vector2i(3, 3),
+					Vector2i(2, 1),
+					Vector2i(0, 3),
+				],
+				[ # ^
+					Vector2i(0, 0),
+					Vector2i(2, 2),
+					Vector2i(3, 0),
+					Vector2i(1, 2),
+					Vector2i(1, 0),
+					Vector2i(3, 2),
+					Vector2i(2, 0),
+					Vector2i(0, 2),
+				],
+			]
+		},
+		# Old template.
+		# a bit inconvenient to use for Brick (Half-Off Square) tilesets.
+		'Winged': {
+			'size': Vector2i(4, 4),
+			'bg': Vector2i(0, 0),
+			'fg': Vector2i(0, 2),
+			'layers': [
+				[ # v
+					Vector2i(0, 1),
 					Vector2i(2, 1),
 					Vector2i(3, 1),
 					Vector2i(1, 3),
@@ -97,6 +126,8 @@ const PRESETS := {
 				],
 			]
 		},
+		# Old template.
+		# The gaps between triangles made them harder to align.
 		'Alternating': {
 			'size': Vector2i(4, 4),
 			'bg': Vector2i(0, 0),
