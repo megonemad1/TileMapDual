@@ -150,7 +150,7 @@ func _set_display_tilemap() -> void:
 		var dummy = Node.new()
 		dummy.name = self.name + " (dummy)"
 		dummy.add_child(display_tilemap)
-		self.get_parent().add_child(dummy) # Add displayed tilemap outside of seperate visibility
+		self.get_parent().add_child.call_deferred(dummy) # Add displayed tilemap outside of seperate visibility
 	
 	copy_properties() # Copy properties from TileMapDual to displated tilemap
 
