@@ -31,11 +31,11 @@ You have to create a `TileMapDual` node with your own tileset, and set it up wit
 
 Here's how to set it up:
 
-![](docs/Plugin%20Setup.mp4)
+https://github.com/user-attachments/assets/8b9e180b-30bc-494c-b5b9-13ccd0f3b66c
 
 You can safely switch to a different tileset if you need to:
 
-![](docs/Changing%20Tilesets.mp4)
+https://github.com/user-attachments/assets/ffefa8df-d8e6-4c3c-a9a7-e207674048f3
 
 TODO:
 - include `Multi Atlas Conflict`
@@ -43,15 +43,16 @@ TODO:
 - record `All Shapes`
 - record `Labelled Terrain`
 - mention lack of support for alternative tiles
+- mention that terrain autogeneration does not work if editing a tileset not used by a tilemapdual
 
 If your spritesheet doesn't follow the standard preset layout, you can manually set its terrains.
-Here is how to set up a Hexagonal Vertical spritesheet:
+Here is how to set up a Hexagonal Vertical tileset:
 
-![](docs/Manual%20Hexagonal%20Terrain%20Setup.mp4)
+https://github.com/user-attachments/assets/d8f780e7-1314-410f-aac6-a7c95381bd51
 
-In case you make mistakes, you can edit the terrain configuration and have real-time:
+In case you make mistakes, you can edit the terrain configuration and see the results in real-time:
 
-![](docs/Terrain%20Setup%20Live%20Feedback.mp4)
+https://github.com/user-attachments/assets/530c5416-6932-48a8-81c6-916f5bd601f5
 
 # Important Note: The rest of this README may be outdated.
 
