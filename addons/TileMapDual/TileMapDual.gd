@@ -155,9 +155,10 @@ func _set_display_tilemap() -> void:
 	
 	copy_properties() # Copy properties from TileMapDual to displayed tilemap
 	# Save any manually introduced alpha modulation:
-	if self.self_modulate.a != 0.0:
-		_modulated_alpha = self.self_modulate.a
-	self.self_modulate.a = 0.0
+	if self.modulate.a != 0.0:
+		_modulated_alpha = self.modulate.a
+	self.modulate.a = 0.0
+	
 	update_geometry()
 	display_tilemap.clear()
 	
