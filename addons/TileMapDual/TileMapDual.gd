@@ -10,6 +10,7 @@ extends TileMapLayer
 #var _material: Material = null
 
 var display_tilemap: TileMapLayer = null
+var dummy: Node = null
 var _filled_cells: Dictionary = {}
 var _emptied_cells: Dictionary = {}
 var _tile_shape: TileSet.TileShape = TileSet.TileShape.TILE_SHAPE_SQUARE
@@ -144,20 +145,21 @@ func _set_display_tilemap() -> void:
 		return
 		
 	# Add the display TileMapLayer
-	if not get_node_or_null('WorldTileMap'):
+	if not dummy: 
 		display_tilemap = TileMapLayer.new()
 		display_tilemap.name = "WorldTileMap"
-		var dummy = Node.new()
+		dummy = Node.new() 								# A dummy holder for the displayed tilemap to reside within
 		dummy.name = self.name + " (dummy)"
 		dummy.add_child(display_tilemap)
 		self.get_parent().add_child.call_deferred(dummy) # Add displayed tilemap outside of seperate visibility
 	
-	copy_properties() # Copy properties from TileMapDual to displated tilemap
-
+	copy_properties() # Copy properties from TileMapDual to displayed tilemap
+	# Save any manually introduced alpha modulation:
+	if self.self_modulate.a != 0.0:
+		_modulated_alpha = self.self_modulate.a
+	self.self_modulate.a = 0.0
 	update_geometry()
 	display_tilemap.clear()
-
-	self.modulate.a = 0.0
 	
 ## Update the size and shape of the tileset, displacing the display TileMapLayer accordingly.
 func update_geometry() -> void:
