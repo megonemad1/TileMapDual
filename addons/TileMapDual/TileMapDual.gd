@@ -107,7 +107,9 @@ func _ready() -> void:
 	else: # Run in-game using signals for better performance
 		set_process(false)
 		self.changed.connect(_update_tileset, 1)
-	
+	update_full_tileset()
+
+
 func _process(_delta): # Only used inside the editor
 	if not self.tile_set:
 		return
