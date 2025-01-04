@@ -136,35 +136,19 @@ func copy_properties() -> void:
 	display_tilemap.y_sort_enabled = self.y_sort_enabled
 	display_tilemap.material = self.material 
 
-## Checks if all checked properties match
-func properties_match() -> bool:
-	# This is very inelegant. Please suggest a cleaner way if you know of one
-	return display_tilemap.tile_set == self.tile_set \
-	&& display_tilemap.y_sort_origin == self.y_sort_origin \
-	&& display_tilemap.x_draw_order_reversed == self.x_draw_order_reversed \
-	&& display_tilemap.rendering_quadrant_size == self.rendering_quadrant_size \
-	&& display_tilemap.collision_enabled == self.collision_enabled \
-	&& display_tilemap.use_kinematic_bodies == self.use_kinematic_bodies \
-	&& display_tilemap.collision_visibility_mode == self.collision_visibility_mode \
-	&& display_tilemap.navigation_enabled == self.navigation_enabled \
-	&& display_tilemap.navigation_visibility_mode == self.navigation_visibility_mode \
-	&& display_tilemap.show_behind_parent == self.show_behind_parent \
-	&& display_tilemap.top_level == self.top_level \
-	&& display_tilemap.light_mask == self.light_mask \
-	&& display_tilemap.visibility_layer == self.visibility_layer \
-	&& display_tilemap.y_sort_enabled == self.y_sort_enabled \
-	&& display_tilemap.material == self.material 
-
 ## Set the dual grid as a child of TileMapDual.
 func _set_display_tilemap() -> void:
 	if not self.tile_set:
 		return
 		
 	# Add the display TileMapLayer
-	if not get_node_or_null(self.name + ' WorldTileMap'):
+	if not get_node_or_null('WorldTileMap'):
 		display_tilemap = TileMapLayer.new()
-		display_tilemap.name = self.name + " WorldTileMap"
-		self.get_parent().add_child(display_tilemap) # Add displayed tilemap outside of seperate visibility
+		display_tilemap.name = "WorldTileMap"
+		var dummy = Node.new()
+		dummy.name = self.name + " (dummy)"
+		dummy.add_child(display_tilemap)
+		self.get_parent().add_child(dummy) # Add displayed tilemap outside of seperate visibility
 	
 	copy_properties() # Copy properties from TileMapDual to displated tilemap
 
@@ -215,9 +199,8 @@ func _update_tileset() -> void:
 	elif _tile_size != self.tile_set.tile_size or _tile_shape != self.tile_set.tile_shape:
 		update_geometry()
 		return
-	elif not properties_match():
-		copy_properties()
-		return
+	
+	copy_properties()
 
 	var _new_emptied_cells: Dictionary = array_to_dict(get_used_cells_by_id(-1, empty_tile))
 	var _new_filled_cells: Dictionary = array_to_dict(get_used_cells_by_id(-1, full_tile))
