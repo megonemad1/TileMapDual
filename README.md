@@ -29,28 +29,37 @@ Just copy the `addons/TileMapDual` folder to your Godot project, and enable it o
 
 You have to create a `TileMapDual` node with your own tileset, and set it up with the appropriate tile shape and orientation, tile and sprite sizes, and terrains.
 
-- Note: Automatic terrain generation is currently disabled because it kept double generating terrains
+Here's how to set it up:
 
+![](docs/Plugin%20Setup.mp4)
 
-It's a bit complicated, but here is how to set up a Hexagonal Vertical spritesheet:
+You can safely switch to a different tileset if you need to:
 
+![](docs/Changing%20Tilesets.mp4)
 
-https://github.com/user-attachments/assets/3fa6b674-83b4-4c8c-b341-d1105679a4c8
+TODO:
+- include `Multi Atlas Conflict`
+- include `Setup Multiple Layers`
+- record `All Shapes`
+- record `Labelled Terrain`
+- mention lack of support for alternative tiles
 
+If your spritesheet doesn't follow the standard preset layout, you can manually set its terrains.
+Here is how to set up a Hexagonal Vertical spritesheet:
 
-You can even edit the terrain configuration in real-time:
+![](docs/Manual%20Hexagonal%20Terrain%20Setup.mp4)
 
+In case you make mistakes, you can edit the terrain configuration and have real-time:
 
-
-https://github.com/user-attachments/assets/5331582b-f480-4b88-873a-a3a2cd38920b
-
-
+![](docs/Terrain%20Setup%20Live%20Feedback.mp4)
 
 # Important Note: The rest of this README may be outdated.
 
 And that's it! You can now start sketching your level with the fully-filled tile, indicated here:  
 
 ![](docs/reference_tileset_standard.png)
+
+TODO: include image with terrains for hex and brick
 
 You can also sketch with the empty tile in the bottom-left corner, or erase tiles as usual. The dual grid will update in real time as you draw!  
 
