@@ -3,14 +3,17 @@
 class_name TileMapDual
 extends TileMapLayer
 
-## Canvas materials or shaders for the display tilemap must be defined here.
-#@export_category('Material')
 ## Material for the display tilemap.
-#@export_custom(PROPERTY_HINT_RESOURCE_TYPE, "ShaderMaterial,CanvasItemMaterial")
-#var _material: Material = null
+@export_custom(PROPERTY_HINT_RESOURCE_TYPE, "ShaderMaterial,CanvasItemMaterial")
+var propagated_material: Material:
+	get: 
+		return propagated_material
+	set(new_material): # Custom setter so that it gets copied 
+		propagated_material = new_material
+		if display_tilemap: # Copy over, only if display tilemap is initiated
+			display_tilemap.material = propagated_material
 
 var display_tilemap: TileMapLayer = null
-var dummy: Node = null
 var _filled_cells: Dictionary = {}
 var _emptied_cells: Dictionary = {}
 var _tile_shape: TileSet.TileShape = TileSet.TileShape.TILE_SHAPE_SQUARE
@@ -27,7 +30,6 @@ var _should_check_cells: bool = false
 var _checked_cells: Dictionary = {}
 var is_isometric: bool = false
 var _atlas_id: int
-var _modulated_alpha: float
 
 ## We will use a bit-wise logic, so that a summation over all sketched
 ## neighbours provides a unique key, assigned to the corresponding
@@ -109,15 +111,17 @@ func _ready() -> void:
 		set_process(false)
 		self.changed.connect(_update_tileset, 1)
 	update_full_tileset()
-
+	# Fire copy upon any property change. More specific than _update_tileset
+	self.changed.connect(copy_properties, 1) 
 
 func _process(_delta): # Only used inside the editor
 	if not self.tile_set:
 		return
 	call_deferred('_update_tileset')
 
-## Both tilemaps must be the same, so we copy all relevant properties
+## Copies properties from parent TileMapDual to child display tilemap
 func copy_properties() -> void:
+	# Both tilemaps must be the same, so we copy all relevant properties
 	# Tilemap
 	display_tilemap.tile_set = self.tile_set
 	# Rendering
@@ -137,27 +141,35 @@ func copy_properties() -> void:
 	display_tilemap.light_mask = self.light_mask
 	display_tilemap.visibility_layer = self.visibility_layer
 	display_tilemap.y_sort_enabled = self.y_sort_enabled
-	display_tilemap.material = self.material 
+	display_tilemap.modulate = self.modulate
+	
+	# If user has set a material in the original slot, copy it over for redundancy
+	# Helps both migration to new version, and prevents user mistakes
+	if self.material: 
+		propagated_material = self.material
+	
+	# Set material for first time
+	display_tilemap.material = propagated_material
+	
+	# Save any manually introduced alpha modulation:
+	if self.self_modulate.a != 0.0:
+		display_tilemap.self_modulate = self.self_modulate
+	self.self_modulate.a = 0.0	# Override modulation to prevent render bugs with certain shaders
+		
+	self.material = null # Unset TileMapDual's material, to prevent render of it
 
 ## Set the dual grid as a child of TileMapDual.
 func _set_display_tilemap() -> void:
 	if not self.tile_set:
 		return
 		
-	# Add the display TileMapLayer
-	if not dummy: 
+	# Add the display TileMapLayer, if it doesn't already exist
+	if not get_node_or_null("WorldTileMap"): 
 		display_tilemap = TileMapLayer.new()
 		display_tilemap.name = "WorldTileMap"
-		dummy = Node.new() 								# A dummy holder for the displayed tilemap to reside within
-		dummy.name = self.name + " (dummy)"
-		dummy.add_child(display_tilemap)
-		self.get_parent().add_child.call_deferred(dummy) # Add displayed tilemap outside of seperate visibility
+		add_child(display_tilemap)
 	
 	copy_properties() # Copy properties from TileMapDual to displayed tilemap
-	# Save any manually introduced alpha modulation:
-	if self.modulate.a != 0.0:
-		_modulated_alpha = self.modulate.a
-	self.modulate.a = 0.0
 	
 	update_geometry()
 	display_tilemap.clear()
@@ -188,8 +200,7 @@ func update_full_tileset() -> void:
 	# _checked_cells is only used when updating
 	# the whole tilemap to avoid repeating checks.
 	# This is skipped when updating tiles individually.
-
-
+	
 ## Update only the very specific tiles that have changed.
 ## Much more efficient than update_full_tileset.
 ## Called by signals when the tileset changes,
@@ -204,8 +215,6 @@ func _update_tileset() -> void:
 	elif _tile_size != self.tile_set.tile_size or _tile_shape != self.tile_set.tile_shape:
 		update_geometry()
 		return
-	
-	copy_properties()
 
 	var _new_emptied_cells: Dictionary = array_to_dict(get_used_cells_by_id(-1, empty_tile))
 	var _new_filled_cells: Dictionary = array_to_dict(get_used_cells_by_id(-1, full_tile))
