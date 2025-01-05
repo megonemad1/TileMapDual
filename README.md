@@ -83,11 +83,11 @@ Note that each atlas can handle 2 surfaces. To add more surfaces or tile variati
 
 ## Materials and shaders
 
-Due to the unique implementation of TileMapDual, shaders and materials may not work as expected in some cases. As a temporary work-around, a material slot, `Propagated Material` is provided, which you'll find at the top of the node properties. Any `ShaderMaterial` or `Material` added there will automatically be propagated to the displayed tilemap.
+Due to the unique implementation of TileMapDual, shaders and materials may not work as expected in some cases. As a temporary work-around, a material slot, `Display Material` is provided, which you'll find at the top of the node properties. Any `ShaderMaterial` or `Material` added there will automatically be propagated to the displayed tilemap.
 
-![Propagated material slot](docs/propagated_material.png)
+![Display material slot](docs/display_material.png)
 
-> Note: changes made to the `CanvasLayer` `Material` and or `Self Modulate` slot will be, upon scene reload, copied to `Propagated Material` and or the displayed tilemap's `self_modulate` before being cleared (set to `null`). This is necessary to prevent rendering of the parent `TileMapDual`.
+> Note: changes made to the `CanvasLayer` `Material` and or `Self Modulate` slot will be, upon scene reload, copied to `Display Material` and or the displayed tilemap's `self_modulate` before being cleared (set to `null`). This is necessary to prevent rendering of the parent `TileMapDual`.
 
 
 ## Why?

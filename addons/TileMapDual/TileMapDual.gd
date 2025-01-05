@@ -5,13 +5,13 @@ extends TileMapLayer
 
 ## Material for the display tilemap.
 @export_custom(PROPERTY_HINT_RESOURCE_TYPE, "ShaderMaterial,CanvasItemMaterial")
-var propagated_material: Material:
+var display_material: Material:
 	get: 
-		return propagated_material
+		return display_material
 	set(new_material): # Custom setter so that it gets copied 
-		propagated_material = new_material
+		display_material = new_material
 		if display_tilemap: # Copy over, only if display tilemap is initiated
-			display_tilemap.material = propagated_material
+			display_tilemap.material = display_material
 
 var display_tilemap: TileMapLayer = null
 var _filled_cells: Dictionary = {}
@@ -146,10 +146,10 @@ func copy_properties() -> void:
 	# If user has set a material in the original slot, copy it over for redundancy
 	# Helps both migration to new version, and prevents user mistakes
 	if self.material: 
-		propagated_material = self.material
+		display_material = self.material
 	
 	# Set material for first time
-	display_tilemap.material = propagated_material
+	display_tilemap.material = display_material
 	
 	# Save any manually introduced alpha modulation:
 	if self.self_modulate.a != 0.0:
