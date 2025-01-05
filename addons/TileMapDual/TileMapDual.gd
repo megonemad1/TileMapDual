@@ -3,11 +3,15 @@
 class_name TileMapDual
 extends TileMapLayer
 
-## Canvas materials or shaders for the display tilemap must be defined here.
-#@export_category('Material')
 ## Material for the display tilemap.
-#@export_custom(PROPERTY_HINT_RESOURCE_TYPE, "ShaderMaterial,CanvasItemMaterial")
-#var _material: Material = null
+@export_custom(PROPERTY_HINT_RESOURCE_TYPE, "ShaderMaterial,CanvasItemMaterial")
+var display_material: Material:
+	get: 
+		return display_material
+	set(new_material): # Custom setter so that it gets copied 
+		display_material = new_material
+		if display_tilemap: # Copy over, only if display tilemap is initiated
+			display_tilemap.material = display_material
 
 var display_tilemap: TileMapLayer = null
 var _filled_cells: Dictionary = {}
@@ -26,7 +30,6 @@ var _should_check_cells: bool = false
 var _checked_cells: Dictionary = {}
 var is_isometric: bool = false
 var _atlas_id: int
-var _modulated_alpha: float
 
 ## We will use a bit-wise logic, so that a summation over all sketched
 ## neighbours provides a unique key, assigned to the corresponding
@@ -108,23 +111,16 @@ func _ready() -> void:
 		set_process(false)
 		self.changed.connect(_update_tileset, 1)
 	update_full_tileset()
-
+	# Fire copy upon any property change. More specific than _update_tileset
+	self.changed.connect(copy_properties, 1) 
 
 func _process(_delta): # Only used inside the editor
 	if not self.tile_set:
 		return
 	call_deferred('_update_tileset')
 
-
-## Set the dual grid as a child of TileMapDual.
-func _set_display_tilemap() -> void:
-	if not self.tile_set:
-		return
-	# Add the display TileMapLayer
-	if not get_node_or_null('WorldTileMap'):
-		display_tilemap = TileMapLayer.new()
-		display_tilemap.name = "WorldTileMap"
-		add_child(display_tilemap)
+## Copies properties from parent TileMapDual to child display tilemap
+func copy_properties() -> void:
 	# Both tilemaps must be the same, so we copy all relevant properties
 	# Tilemap
 	display_tilemap.tile_set = self.tile_set
@@ -145,22 +141,39 @@ func _set_display_tilemap() -> void:
 	display_tilemap.light_mask = self.light_mask
 	display_tilemap.visibility_layer = self.visibility_layer
 	display_tilemap.y_sort_enabled = self.y_sort_enabled
-	display_tilemap.material = self.material
-	# Apply shaders to try to solve #19
-	#if _material != null:
-	#	display_tilemap.material = _material
-	# Displace the display TileMapLayer
+	display_tilemap.modulate = self.modulate
+	
+	# If user has set a material in the original slot, copy it over for redundancy
+	# Helps both migration to new version, and prevents user mistakes
+	if self.material: 
+		display_material = self.material
+	
+	# Set material for first time
+	display_tilemap.material = display_material
+	
+	# Save any manually introduced alpha modulation:
+	if self.self_modulate.a != 0.0:
+		display_tilemap.self_modulate = self.self_modulate
+	self.self_modulate.a = 0.0	# Override modulation to prevent render bugs with certain shaders
+		
+	self.material = null # Unset TileMapDual's material, to prevent render of it
+
+## Set the dual grid as a child of TileMapDual.
+func _set_display_tilemap() -> void:
+	if not self.tile_set:
+		return
+		
+	# Add the display TileMapLayer, if it doesn't already exist
+	if not get_node_or_null("WorldTileMap"): 
+		display_tilemap = TileMapLayer.new()
+		display_tilemap.name = "WorldTileMap"
+		add_child(display_tilemap)
+	
+	copy_properties() # Copy properties from TileMapDual to displayed tilemap
+	
 	update_geometry()
 	display_tilemap.clear()
-	# Make TileMapDual invisible without disabling it
-	#if not self.material:  # Let's remove the IF to try to solve #19
-	#self.material = null
-	# Save the manually introduced alpha modulation:
-	if self.self_modulate.a != 0.0:
-		_modulated_alpha = self.self_modulate.a
-	self.self_modulate.a = 0.0
-
-
+	
 ## Update the size and shape of the tileset, displacing the display TileMapLayer accordingly.
 func update_geometry() -> void:
 	is_isometric = self.tile_set.tile_shape == TileSet.TileShape.TILE_SHAPE_ISOMETRIC
@@ -187,8 +200,7 @@ func update_full_tileset() -> void:
 	# _checked_cells is only used when updating
 	# the whole tilemap to avoid repeating checks.
 	# This is skipped when updating tiles individually.
-
-
+	
 ## Update only the very specific tiles that have changed.
 ## Much more efficient than update_full_tileset.
 ## Called by signals when the tileset changes,
