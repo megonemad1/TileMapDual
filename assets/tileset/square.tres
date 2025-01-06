@@ -1,9 +1,9 @@
 [gd_resource type="TileSet" load_steps=3 format=3 uid="uid://b4n74vtil5myc"]
 
-[ext_resource type="Texture2D" uid="uid://buyincjxy1lws" path="res://assets/tileset_standard.png" id="1_0al3t"]
+[ext_resource type="Texture2D" uid="uid://buyincjxy1lws" path="res://assets/tileset_standard.png" id="1_26eve"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wrsgs"]
-texture = ExtResource("1_0al3t")
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mlown"]
+texture = ExtResource("1_26eve")
 texture_region_size = Vector2i(64, 64)
 0:3/0 = 0
 0:3/0/terrain_set = 0
@@ -111,4 +111,4 @@ terrain_set_0/terrain_0/name = "<any>"
 terrain_set_0/terrain_0/color = Color(0.933333, 0.509804, 0.933333, 1)
 terrain_set_0/terrain_1/name = "FG -tileset_standard.png"
 terrain_set_0/terrain_1/color = Color(0.5, 0.4375, 0.25, 1)
-sources/1 = SubResource("TileSetAtlasSource_wrsgs")
+sources/1 = SubResource("TileSetAtlasSource_mlown")

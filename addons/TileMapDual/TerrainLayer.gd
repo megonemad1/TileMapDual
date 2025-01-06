@@ -64,7 +64,7 @@ func apply_rule(terrain_neighbors: Array) -> Dictionary:
 	if is_empty:
 		return TILE_EMPTY
 	var normalized_neighbors = terrain_neighbors.map(normalize_terrain)
-	
+
 	var node := _rules
 	for terrain in normalized_neighbors:
 		if terrain not in node:

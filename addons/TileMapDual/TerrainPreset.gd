@@ -158,6 +158,7 @@ const PRESETS := {
 	},
 }
 
+# TODO: add undo/redo support
 
 ## Would you like to automatically create tiles in the atlas?
 static func write_default_preset(tile_set: TileSet, atlas: TileSetAtlasSource) -> void:

@@ -21,6 +21,8 @@ func _init(
 	fields: Dictionary,
 	layer: TerrainLayer
 ) -> void:
+	# TODO: clone all properties of the parent TileMapDual
+	# possibly serialize the parent and use a for loop?
 	#print('initializing Layer...')
 	offset = fields.offset
 	_tileset_watcher = tileset_watcher
@@ -29,9 +31,11 @@ func _init(
 	tileset_watcher.tileset_resized.connect(reposition, 1)
 	reposition()
 
+
 ## Adjusts the position of this DisplayLayer based on the tile set's tile_size
 func reposition() -> void:
 	position = offset * Vector2(_tileset_watcher.tile_size)
+
 
 ## Updates all display tiles to reflect the current changes.
 func update_tiles_all(cache: TileCache) -> void:
