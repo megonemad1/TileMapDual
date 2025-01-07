@@ -112,14 +112,10 @@ You can use multiple atlases in the same tileset. To change them in-game, make s
 Note that each atlas can handle 2 surfaces. To add more surfaces or tile variations on top of one another, consider using a second `TileMapDual` node with transparencies in your tileset, just as you would do with a regular `TileMapLayer`. An example is provided in the **MultipleLayers** scene.  
 
 ![](docs/demo_layers.png)
-
 ## Materials and shaders
 
-Due to the unique implementation of TileMapDual, shaders and materials may not work as expected in some cases. As a temporary work-around, a material slot, `Display Material` is provided, which you'll find at the top of the node properties. Any `ShaderMaterial` or `Material` added there will automatically be propagated to the displayed tilemap.
+Due to the unique implementation of TileMapDual, shaders and materials may not work as expected in some cases. The fix for this will work differently in v5 compared to v4.
 
-![Display material slot](docs/display_material.png)
-
-> Note: changes made to the `CanvasLayer` `Material` and or `Self Modulate` slot will be, upon scene reload, copied to `Display Material` and or the displayed tilemap's `self_modulate` before being cleared (set to `null`). This is necessary to prevent rendering of the parent `TileMapDual`.
 
 
 ## Why?
