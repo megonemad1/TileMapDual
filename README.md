@@ -1,5 +1,16 @@
 # TileMapDual
 
+## IMPORTANT ANNOUNCEMENT: v5.0
+
+First of all, thanks to everyone contributing with testing, issues and pull requests! Today, TileMapDual v4.0 is a great Godot plugin thanks to you!  
+
+Now, thanks to the amazing work by [raffimolero](https://github.com/raffimolero), the first development version of **TileMapDual v5.0** is available for testing on GitHub, under the [v5.0.0-dev branch](https://github.com/pablogila/TileMapDual/tree/v5.0.0-dev). This represents a full rewrite, so bugs are expected. Please, feel free to try this new version, to report issues and to submit pull requests with your ideas.  
+
+Happy coding!
+
+
+## TileMapDual v4
+
 Introducing *TileMapDual*: a simple, automatic and straightforward custom `TileMapLayer` node for [Godot](https://github.com/godotengine/godot) that provides a real-time, in-editor and in-game dual-grid tileset system, for both **square** and **isometric** grids.  
 
 This dual-grid system, [as explained by Oskar Stålberg](https://x.com/OskSta/status/1448248658865049605), reduces the number of tiles required from 47 to just 15 (yes, fifteen!!), rocketing your dev journey!  
