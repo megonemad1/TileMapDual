@@ -40,8 +40,10 @@ https://github.com/user-attachments/assets/ffefa8df-d8e6-4c3c-a9a7-e207674048f3
 TODO:
 - include `Multi Atlas Conflict`
 - include `Setup Multiple Layers`
-- record `All Shapes`
-- record `Labelled Terrain`
+- include `All Shapes and Common Mistakes`
+- include `Custom Drawing Sprites`
+    - credit for snowflake svg: https://pixsector.com/icon/free-snowflake-svg-vectorart/967
+    - credit for water svg: https://www.svgrepo.com/svg/103674/water-drop
 - mention lack of support for alternative tiles
 - mention that terrain autogeneration does not work if editing a tileset not used by a tilemapdual
 

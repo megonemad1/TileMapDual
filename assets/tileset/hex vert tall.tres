@@ -1,9 +1,10 @@
-[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://xee4rh3e4gnk"]
+[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://xee4rh3e4gnk"]
 
-[ext_resource type="Texture2D" uid="uid://c5yogecrq5jqd" path="res://assets/Hex Dual Vert Tall - 96x128tri 128x110hex.png" id="1_co0w1"]
+[ext_resource type="Texture2D" uid="uid://c5yogecrq5jqd" path="res://assets/Hex Dual Vert Tall Standard - 96x128tri 128x110hex.png" id="1_oqnn8"]
+[ext_resource type="Texture2D" uid="uid://0tjyg7bu5ijr" path="res://assets/Hex Full Tiles Logo.png" id="2_0grct"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7qsoi"]
-texture = ExtResource("1_co0w1")
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xee52"]
+texture = ExtResource("1_oqnn8")
 texture_region_size = Vector2i(96, 128)
 1:0/0 = 0
 1:0/0/terrain_set = 0
@@ -47,7 +48,6 @@ texture_region_size = Vector2i(96, 128)
 3:0/0/terrains_peering_bit/top_left_corner = 1
 0:0/0 = 0
 0:0/0/terrain_set = 0
-0:0/0/terrain = 0
 0:0/0/terrains_peering_bit/bottom_right_corner = 0
 0:0/0/terrains_peering_bit/left_corner = 0
 0:0/0/terrains_peering_bit/top_right_corner = 0
@@ -83,10 +83,19 @@ texture_region_size = Vector2i(96, 128)
 0:2/0/terrains_peering_bit/top_right_corner = 1
 2:0/0 = 0
 2:0/0/terrain_set = 0
-2:0/0/terrain = 1
 2:0/0/terrains_peering_bit/bottom_right_corner = 1
 2:0/0/terrains_peering_bit/left_corner = 1
 2:0/0/terrains_peering_bit/top_right_corner = 1
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_smguy"]
+texture = ExtResource("2_0grct")
+texture_region_size = Vector2i(128, 110)
+0:0/0 = 0
+0:0/0/terrain_set = 0
+0:0/0/terrain = 0
+1:0/0 = 0
+1:0/0/terrain_set = 0
+1:0/0/terrain = 1
 
 [resource]
 tile_shape = 3
@@ -95,6 +104,7 @@ tile_size = Vector2i(128, 110)
 terrain_set_0/mode = 1
 terrain_set_0/terrain_0/name = "<any>"
 terrain_set_0/terrain_0/color = Color(0.933333, 0.509804, 0.933333, 1)
-terrain_set_0/terrain_1/name = "FG -Hex Dual Vert Tall - 96x128tri 128x110hex.png"
+terrain_set_0/terrain_1/name = "FG -Hex Dual Vert Tall Standard - 96x128tri 128x110hex.png"
 terrain_set_0/terrain_1/color = Color(0.5, 0.4375, 0.25, 1)
-sources/0 = SubResource("TileSetAtlasSource_7qsoi")
+sources/5 = SubResource("TileSetAtlasSource_xee52")
+sources/8 = SubResource("TileSetAtlasSource_smguy")
