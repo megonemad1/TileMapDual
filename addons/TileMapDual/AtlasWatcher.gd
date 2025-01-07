@@ -17,17 +17,23 @@ func _init(parent: TileSetWatcher, sid: int, atlas: TileSetAtlasSource) -> void:
 	self.sid = sid
 	self.atlas = atlas
 	atlas.changed.connect(_atlas_changed, ConnectFlags.CONNECT_DEFERRED)
-	atlas.changed.connect(_detect_autogen, ConnectFlags.CONNECT_DEFERRED | ConnectFlags.CONNECT_ONE_SHOT)
+	if _atlas_is_empty():
+		atlas.changed.connect(_detect_autogen, ConnectFlags.CONNECT_DEFERRED | ConnectFlags.CONNECT_ONE_SHOT)
+
+
+func _atlas_is_empty() -> bool:
+	return atlas.get_tiles_count() == 0
 
 
 ## Returns true if the texture has any opaque pixels in the specified tile coordinates.
-func is_opaque_tile(image: Image, tile: Vector2i, p_threshold: float = 0.1) -> bool:
+func _is_opaque_tile(image: Image, tile: Vector2i, p_threshold: float = 0.1) -> bool:
 	# We cannot use atlas.get_tile_texture_region(tile) as it fails on unregistered tiles.
 	var region := Rect2i(tile * atlas.texture_region_size, atlas.texture_region_size)
 	var sprite := image.get_region(region)
 	if sprite.is_invisible():
 		return false
-	# We're still not sure. Godot's auto-gen considers 0.1 opacity as "transparent" but not "invisible".
+	# We're still not sure if the tile is empty or not.
+	# Godot's auto-gen considers 0.1 opacity as "transparent" but not "invisible".
 	for y in range(region.position.y, region.end.y):
 		for x in range(region.position.x, region.end.x):
 			if image.get_pixel(x, y).a > p_threshold:
@@ -44,7 +50,7 @@ func _detect_autogen() -> void:
 	for y in size.y:
 		for x in size.x:
 			var tile := Vector2i(x, y)
-			if atlas.has_tile(tile) != is_opaque_tile(image, tile):
+			if atlas.has_tile(tile) != _is_opaque_tile(image, tile):
 				return
 	parent.atlas_autotiled.emit(sid, atlas)
 
