@@ -27,10 +27,42 @@ Just copy the `addons/TileMapDual` folder to your Godot project, and enable it o
 
 ## Usage
 
-You have to create a `TileMapDual` node with your own 2x2 tileset, following the [standard godot tileset](https://user-images.githubusercontent.com/47016402/87044518-ee28fa80-c1f6-11ea-86f5-de53e86fcbb6.png).
+You have to create a `TileMapDual` node with your own tileset, and set it up with the appropriate tile shape and orientation, tile and sprite sizes, and terrains.
+
+Here's how to set it up:
+
+https://github.com/user-attachments/assets/8b9e180b-30bc-494c-b5b9-13ccd0f3b66c
+
+You can safely switch to a different tileset if you need to:
+
+https://github.com/user-attachments/assets/ffefa8df-d8e6-4c3c-a9a7-e207674048f3
+
+TODO:
+- include `Multi Atlas Conflict`
+- include `Setup Multiple Layers`
+- include `All Shapes and Common Mistakes`
+- include `Custom Drawing Sprites`
+    - credit for snowflake svg: https://pixsector.com/icon/free-snowflake-svg-vectorart/967
+    - credit for water svg: https://www.svgrepo.com/svg/103674/water-drop
+- mention lack of support for alternative tiles
+- mention that terrain autogeneration does not work if editing a tileset not used by a tilemapdual
+
+If your spritesheet doesn't follow the standard preset layout, you can manually set its terrains.
+Here is how to set up a Hexagonal Vertical tileset:
+
+https://github.com/user-attachments/assets/d8f780e7-1314-410f-aac6-a7c95381bd51
+
+In case you make mistakes, you can edit the terrain configuration and see the results in real-time:
+
+https://github.com/user-attachments/assets/530c5416-6932-48a8-81c6-916f5bd601f5
+
+# Important Note: The rest of this README may be outdated.
+
 And that's it! You can now start sketching your level with the fully-filled tile, indicated here:  
 
 ![](docs/reference_tileset_standard.png)
+
+TODO: include image with terrains for hex and brick
 
 You can also sketch with the empty tile in the bottom-left corner, or erase tiles as usual. The dual grid will update in real time as you draw!  
 
