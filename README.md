@@ -33,19 +33,39 @@ Here's how to set it up:
 
 https://github.com/user-attachments/assets/8b9e180b-30bc-494c-b5b9-13ccd0f3b66c
 
+**Notes:**
+- Terrain autogeneration does not work if you are editing a TileSet by itself from the assets folder. You must put it in a TileMapDual first.
+- We currently do not support alternative tiles.
+
 You can safely switch to a different tileset if you need to:
 
 https://github.com/user-attachments/assets/ffefa8df-d8e6-4c3c-a9a7-e207674048f3
 
-TODO:
-- include `Multi Atlas Conflict`
-- include `Setup Multiple Layers`
-- include `All Shapes and Common Mistakes`
-- include `Custom Drawing Sprites`
-    - credit for snowflake svg: https://pixsector.com/icon/free-snowflake-svg-vectorart/967
-    - credit for water svg: https://www.svgrepo.com/svg/103674/water-drop
-- mention lack of support for alternative tiles
-- mention that terrain autogeneration does not work if editing a tileset not used by a tilemapdual
+And use multiple atlases in the same TileSet, with a few quirks if you don't set up the terrains properly:
+
+https://github.com/user-attachments/assets/49cf6855-54f7-4e7b-9fda-41e3d0a3a823
+
+For this purpose, we recommend using multiple different layers instead:
+
+https://github.com/user-attachments/assets/f801f233-917d-4ed2-a873-662584c5ef66
+
+This plugin supports all the different tile shapes, layouts, and offset axes..
+Here's a rundown of all of them, with mistakes, and fixes for each mistake:
+
+https://github.com/user-attachments/assets/bb0eb049-d4b3-4ff8-aab3-7ecb59feab69
+
+If you want to add extra data like hitboxes and pathing and such to your TileSet, we recommend having 2 separate spritesheets:
+- one for showing to the user ("display tiles")
+- one for program logic ("world tiles")
+
+Here's how to set it up:
+
+https://github.com/user-attachments/assets/2aedabb4-013d-48af-86a3-6c26771b8154
+
+- credit for snowflake svg: https://pixsector.com/icon/free-snowflake-svg-vectorart/967
+- credit for water svg: https://www.svgrepo.com/svg/103674/water-drop
+
+You can then put hitboxes on the display tiles and logic such as pathing on the logical tiles.
 
 If your spritesheet doesn't follow the standard preset layout, you can manually set its terrains.
 Here is how to set up a Hexagonal Vertical tileset:
