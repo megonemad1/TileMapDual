@@ -8,7 +8,7 @@ var _tileset_watcher: TileSetWatcher
 var _display: Display
 func _ready() -> void:
 	_tileset_watcher = TileSetWatcher.new(tile_set)
-	_display = Display.new(_tileset_watcher)
+	_display = Display.new(self, _tileset_watcher)
 	add_child(_display)
 	_make_self_invisible()
 	if Engine.is_editor_hint():
@@ -21,7 +21,12 @@ func _ready() -> void:
 
 ## Automatically generate terrains when the atlas is initialized.
 func _atlas_autotiled(source_id: int, atlas: TileSetAtlasSource):
-	TerrainPreset.write_default_preset(tile_set, atlas)
+	var urm := EditorPlugin.new().get_undo_redo()
+	urm.create_action("Create tiles in non-transparent texture regions", UndoRedo.MergeMode.MERGE_ALL, self, true)
+	# NOTE: commit_action() is called immediately after.
+	# NOTE: Atlas is guaranteed to have only been auto-generated with no extra peering bit information.
+	TerrainPreset.write_default_preset(urm, tile_set, atlas)
+	urm.commit_action()
 
 
 ## Makes the main world grid invisible.

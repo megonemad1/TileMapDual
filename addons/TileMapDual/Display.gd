@@ -8,9 +8,12 @@ extends Node2D
 var terrain: TerrainDual
 ## See TileSetWatcher.gd
 var _tileset_watcher: TileSetWatcher
+## The parent TileMapDual to base the terrains off of.
+@export var world: TileMapDual
 ## Creates a new Display that updates when the TileSet updates.
-func _init(tileset_watcher: TileSetWatcher) -> void:
+func _init(world: TileMapDual, tileset_watcher: TileSetWatcher) -> void:
 	#print('initializing Display...')
+	self.world = world
 	_tileset_watcher = tileset_watcher
 	terrain = TerrainDual.new(tileset_watcher)
 	terrain.changed.connect(_terrain_changed, 1)
@@ -39,7 +42,7 @@ func _create_layers():
 	for i in grid.size():
 		var layer_config: Dictionary = grid[i]
 		#print('layer_config: %s' % layer_config)
-		var layer := DisplayLayer.new(_tileset_watcher, layer_config, terrain.layers[i])
+		var layer := DisplayLayer.new(world, _tileset_watcher, layer_config, terrain.layers[i])
 		add_child(layer)
 		layer.update_tiles_all(cached_cells)
 

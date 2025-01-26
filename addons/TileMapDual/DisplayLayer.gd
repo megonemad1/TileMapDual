@@ -17,11 +17,12 @@ var _tileset_watcher: TileSetWatcher
 var _terrain: TerrainLayer
 
 func _init(
+	world: TileMapDual,
 	tileset_watcher: TileSetWatcher,
 	fields: Dictionary,
 	layer: TerrainLayer
 ) -> void:
-	# TODO: clone all properties of the parent TileMapDual
+	# TODO: clone all properties of world: TileMapDual
 	# possibly serialize the parent and use a for loop?
 	#print('initializing Layer...')
 	offset = fields.offset

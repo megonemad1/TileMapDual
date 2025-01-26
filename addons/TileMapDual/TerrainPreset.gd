@@ -158,55 +158,94 @@ const PRESETS := {
 	},
 }
 
-# TODO: add undo/redo support
-
 ## Would you like to automatically create tiles in the atlas?
-static func write_default_preset(tile_set: TileSet, atlas: TileSetAtlasSource) -> void:
+##
+## NOTE: Assumes urm.create_action() was called. Does not actually do anything until urm.commit_action() is called.
+## NOTE: Assumes atlas only has auto-generated tiles. Does not save peering bit information or anything else for undo/redo.
+static func write_default_preset(urm: EditorUndoRedoManager, tile_set: TileSet, atlas: TileSetAtlasSource) -> void:
 	#print('writing default')
 	var neighborhood := TerrainDual.tileset_neighborhood(tile_set)
-	var terrain := _new_terrain(
+	var terrain := new_terrain(
+		urm,
 		tile_set,
 		atlas.texture.resource_path.get_file()
 	)
 	write_preset(
+		urm,
 		atlas,
 		neighborhood,
 		terrain,
 	)
 
+
 ## Creates terrain set 0 (the primary terrain set) and terrain 0 (the 'any' terrain)
-static func _init_terrains(tile_set: TileSet) -> void:
+##
+## NOTE: Assumes urm.create_action() was called. Does not actually do anything until urm.commit_action() is called.
+static func init_terrains(urm: EditorUndoRedoManager, tile_set: TileSet) -> void:
+	urm.add_do_method(TerrainPreset, "_do_init_terrains", tile_set)
+	urm.add_undo_method(TerrainPreset, "_undo_init_terrains", tile_set)
+
+static func _do_init_terrains(tile_set: TileSet) -> void:
 	tile_set.add_terrain_set()
 	tile_set.set_terrain_set_mode(0, TileSet.TERRAIN_MODE_MATCH_CORNERS)
 	tile_set.add_terrain(0)
 	tile_set.set_terrain_name(0, 0, "<any>")
 	tile_set.set_terrain_color(0, 0, Color.VIOLET)
 
+static func _undo_init_terrains(tile_set: TileSet) -> void:
+	tile_set.remove_terrain_set(0)
+
 
 ## Adds a new terrain type to terrain set 0 for the sprites to use.
-static func _new_terrain(tile_set: TileSet, terrain_name: String) -> int:
+##
+## NOTE: Assumes urm.create_action() was called. Does not actually do anything until urm.commit_action() is called.
+static func new_terrain(urm: EditorUndoRedoManager, tile_set: TileSet, terrain_name: String) -> int:
+	var terrain: int
 	if tile_set.get_terrain_sets_count() == 0:
-		_init_terrains(tile_set)
-	var terrain := tile_set.get_terrains_count(0)
-	tile_set.add_terrain(0)
-	tile_set.set_terrain_name(0, terrain, "FG -%s" % terrain_name)
+		init_terrains(urm, tile_set)
+		terrain = 1
+	else:
+		terrain = tile_set.get_terrains_count(0)
+	urm.add_do_method(TerrainPreset, "_do_new_terrain", tile_set, terrain_name)
+	urm.add_undo_method(TerrainPreset, "_undo_new_terrain", tile_set)
 	return terrain
 
+static func _do_new_terrain(tile_set: TileSet, terrain_name: String) -> void:
+	tile_set.add_terrain(0)
+	var terrain := tile_set.get_terrains_count(0) - 1
+	tile_set.set_terrain_name(0, terrain, "FG -%s" % terrain_name)
 
-## Takes a preset and puts it onto the given atlas.
+static func _undo_new_terrain(tile_set: TileSet) -> void:
+	var terrain := tile_set.get_terrains_count(0) - 1
+	tile_set.remove_terrain(0, terrain)
+
+
+## Takes a preset and writes it onto the given atlas, replacing the previous configuration.
 ## ARGUMENTS:
 ## - atlas: the atlas source to apply the preset to.
 ## - filters: the neighborhood filter
+##
+## NOTE: Assumes urm.create_action() was called. Does not actually do anything until urm.commit_action() is called.
+## NOTE: Assumes atlas only has auto-generated tiles. Does not save peering bit information or anything else for undo/redo.
 static func write_preset(
+	urm: EditorUndoRedoManager,
 	atlas: TileSetAtlasSource,
 	neighborhood: TerrainDual.Neighborhood,
 	terrain_foreground: int,
 	terrain_background: int = 0,
 	preset: Dictionary = neighborhood_preset(neighborhood),
 ) -> void:
+	clear_and_divide_atlas(urm, atlas, preset.size)
+	urm.add_do_method(TerrainPreset, '_do_write_preset', atlas, neighborhood, terrain_foreground, terrain_background, preset)
+
+static func _do_write_preset(
+	atlas: TileSetAtlasSource,
+	neighborhood: TerrainDual.Neighborhood,
+	terrain_foreground: int,
+	terrain_background: int,
+	preset: Dictionary,
+) -> void:
 	var layers: Array = TerrainDual.NEIGHBORHOOD_LAYERS[neighborhood]
-	#print('writing')
-	clear_and_resize_atlas(atlas, preset.size)
 	# Set peering bits
 	var sequences: Array = preset.layers
 	for j in layers.size():
@@ -227,12 +266,57 @@ static func write_preset(
 	atlas.get_tile_data(preset.bg, 0).terrain = terrain_background
 	atlas.get_tile_data(preset.fg, 0).terrain = terrain_foreground
 
+## Unregisters all the tiles in an atlas and changes the size of the individual sprites.
+##
+## NOTE: Assumes urm.create_action() was called. Does not actually do anything until urm.commit_action() is called.
+## NOTE: Assumes atlas only has auto-generated tiles. Does not save peering bit information or anything else for undo/redo.
+static func clear_and_resize_atlas(urm: EditorUndoRedoManager, atlas: TileSetAtlasSource, size: Vector2) -> void:
+	var atlas_data := _save_atlas_data(atlas)
+	urm.add_do_method(TerrainPreset, '_do_clear_and_resize_atlas', atlas, size)
+	urm.add_undo_method(TerrainPreset, '_undo_clear_and_resize_atlas', atlas, atlas_data)
 
-## Unregisters all the tiles in an atlas and changes the size of the
-## individual sprites to accomodate a size.x by size.y grid of sprites.
-static func clear_and_resize_atlas(atlas: TileSetAtlasSource, size: Vector2i) -> void:
+static func _do_clear_and_resize_atlas(atlas: TileSetAtlasSource, size: Vector2) -> void:
 	# Clear all tiles
 	atlas.texture_region_size = atlas.texture.get_size() + Vector2.ONE
 	atlas.clear_tiles_outside_texture()
 	# Resize the tiles
-	atlas.texture_region_size = atlas.texture.get_size() / Vector2(size)
+	atlas.texture_region_size = size
+
+static func _undo_clear_and_resize_atlas(atlas: TileSetAtlasSource, atlas_data: Dictionary) -> void:
+	_load_atlas_data(atlas, atlas_data)
+	
+## NOTE: Assumes atlas only has auto-generated tiles. Does not save peering bit information or anything else.
+static func _save_atlas_data(atlas: TileSetAtlasSource) -> Dictionary:
+	var size_img := atlas.texture.get_size()
+	var size_sprite := atlas.texture_region_size
+	var size_dims := Vector2i(size_img) / size_sprite
+	var tiles := []
+	for y in size_dims.y:
+		var row := []
+		for x in size_dims.x:
+			var tile := Vector2i(x, y)
+			var exists := atlas.has_tile(tile)
+			row.push_back(exists)
+		tiles.push_back(row)
+	return {
+		'size_sprite': size_sprite,
+		'size_dims': size_dims,
+		'tiles': tiles,
+	}
+
+static func _load_atlas_data(atlas: TileSetAtlasSource, atlas_data: Dictionary) -> void:
+	_do_clear_and_resize_atlas(atlas, atlas_data.size_sprite)
+	for y in atlas_data.size_dims.y:
+		for x in atlas_data.size_dims.x:
+			if atlas_data.tiles[y][x]:
+				var tile := Vector2i(x, y)
+				atlas.create_tile(tile)
+			
+
+## Unregisters all the tiles in an atlas and changes the size of the
+## individual sprites to accomodate a divisions.x by divisions.y grid of sprites.
+##
+## NOTE: Assumes urm.create_action() was called. Does not actually do anything until urm.commit_action() is called.
+## NOTE: Assumes atlas only has auto-generated tiles. Does not save peering bit information or anything else for undo/redo.
+static func clear_and_divide_atlas(urm: EditorUndoRedoManager, atlas: TileSetAtlasSource, divisions: Vector2i) -> void:
+	clear_and_resize_atlas(urm, atlas, atlas.texture.get_size() / Vector2(divisions))

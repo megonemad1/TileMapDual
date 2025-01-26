@@ -3,6 +3,11 @@
 ## Also emits parent.atlas_autotiled when it thinks the user auto-generated atlas tiles.
 class_name AtlasWatcher
 
+## Prevents the number of seen atlases from extending to infinity.
+const UNDO_LIMIT = 1024
+## Stores all of the atlas instance id's that have been seen before, to prevent autogen on redo.
+static var _registered_atlases := []
+
 ## The TileSetWatcher that created this AtlasWatcher. Used to send signals back.
 var parent: TileSetWatcher
 
@@ -17,7 +22,12 @@ func _init(parent: TileSetWatcher, sid: int, atlas: TileSetAtlasSource) -> void:
 	self.sid = sid
 	self.atlas = atlas
 	atlas.changed.connect(_atlas_changed, ConnectFlags.CONNECT_DEFERRED)
-	if _atlas_is_empty():
+	var id := atlas.get_instance_id()
+	# should not autogen if atlas was created through redo, i.e. its instance id already existed
+	if _atlas_is_empty() and id not in _registered_atlases:
+		_registered_atlases.push_back(id)
+		if _registered_atlases.size() > UNDO_LIMIT:
+			_registered_atlases.pop_front()
 		atlas.changed.connect(_detect_autogen, ConnectFlags.CONNECT_DEFERRED | ConnectFlags.CONNECT_ONE_SHOT)
 
 
