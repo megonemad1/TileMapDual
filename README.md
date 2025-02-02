@@ -1,6 +1,34 @@
 # TileMapDual
 
-Introducing *TileMapDual*: a simple, automatic and straightforward custom `TileMapLayer` node for [Godot](https://github.com/godotengine/godot) that provides a real-time, in-editor and in-game dual-grid tileset system, for both **square** and **isometric** grids.  
+## Announcements
+
+**We want YOU!** TileMapDual v5 is here with lots of updates, including hex grid support. Please report any issues you may encounter, and feel free to open new pull requests to contribute with your own code!
+More info on the [v5 discussion](https://github.com/pablogila/TileMapDual/issues/16).
+
+
+## Index
+
+- [Introducing TileMapDual](#introducing-tilemapdual)
+- [Installation](#installation)
+- [Usage](#usage)
+    - [Basic usage](#basic-usage)
+    - [Isometric tiles](#isometric-tiles)
+    - [Hex tiles and more](#hex-tiles-and-more)
+    - [Multiple terrains](#multiple-terrains)
+    - [Collisions](#collisions)
+    - [TileMapDualLegacy stable version](#tilemapduallegacy-stable-version)
+- [Why?](#why)
+- [Contributing](#contributing)
+- [Contributors](#contributors)
+- [License](#license)
+- [FAQ and troubleshoot](#faq-and-troubleshoot)
+- [References](#references)
+
+
+
+## Introducing TileMapDual
+
+Welcome to *TileMapDual*: a simple, automatic and straightforward custom `TileMapLayer` node for [Godot](https://github.com/godotengine/godot) that provides a real-time, in-editor and in-game dual-grid tileset system, for both **square** and **isometric** grids.  
 
 This dual-grid system, [as explained by Oskar Stålberg](https://x.com/OskSta/status/1448248658865049605), reduces the number of tiles required from 47 to just 15 (yes, fifteen!!), rocketing your dev journey!  
 
@@ -14,8 +42,6 @@ All grids are supported by TileMapDual. Square, isometric, hex... The only limit
 
 ![](docs/demo_iso.gif)  
 
-
-## Advantages
 
 Using a dual-grid system has the following advantages:  
 - Only [15](https://user-images.githubusercontent.com/47016402/87044518-ee28fa80-c1f6-11ea-86f5-de53e86fcbb6.png) tiles are required for autotiling, instead of [47](https://user-images.githubusercontent.com/47016402/87044533-f5e89f00-c1f6-11ea-9178-67b2e357ee8a.png)
@@ -32,6 +58,8 @@ Just copy the `addons/TileMapDual` folder to your Godot project, and enable it o
 
 ## Usage
 
+### Basic usage
+
 TileMapDual is loaded in the same way as a regular `TileMapLayer` node.
 You have to create a `TileMapDual` node with your own tileset, and set it up with the appropriate tile shape and orientation, etc.
 
@@ -46,7 +74,7 @@ You can also sketch with the empty tile in the bottom-left corner, or erase tile
 You can find several example scenes for all kinds of grids in the `examples/` folder.
 
 
-### Isometric tilesets
+### Isometric tiles
 
 To use isometric tilemaps, all you need to do is follow an isometric-ed version of the [standard godot tileset](https://user-images.githubusercontent.com/47016402/87044518-ee28fa80-c1f6-11ea-86f5-de53e86fcbb6.png) template that we previously used for square tilemaps, as shown in the image below:  
 
@@ -58,7 +86,7 @@ But it can also be drawn more easily using a tool like [TileCropper](https://git
 ![](docs/reference_tilecropper.png)  
 
 
-### Hex, half-displaced grids, etc
+### Hex tiles and more
 
 Check the first video on [FAQ and Troubleshoot](#faq-and-troubleshoot) to see how to configure all kinds of grids.
 
@@ -70,9 +98,9 @@ To use more than two terrain types, it is highly encouraged to use multiple Tile
 ![](docs/multiple_layers.gif)
 
 
-### Hitboxes
+### Collisions
 
-To include extra data like hitboxes, pathing and such to your TileSet, it is recommended to use 2 separate spritesheets:
+To include extra data like collisions, pathing and such to your TileSet, it is recommended to use 2 separate spritesheets:
 - one for displaying the tiles ("display tiles")
 - one for program logic ("world tiles")
 
@@ -81,7 +109,7 @@ Here's how to set it up:
 ![](docs/custom_drawing_sprites.gif)
 
 
-### TileMapDual Legacy (stable version)
+### TileMapDualLegacy stable version
 
 The TileMapDual v5 release was a full rewritte. If you encounter issues, please report them on GitHub. For the time being, and to make the transition from v4 to v5 smoother, a custom `TileMapDualLegacy` node is available within the v5 version, containing the stable version from [v4.0.3](https://github.com/pablogila/TileMapDual/tree/v4.0.3).
 
@@ -103,23 +131,41 @@ This release also implements modern **TileMapLayers** instead of the deprecated 
 
 Plus, you can use **multiple atlases** in the same tileset.  
 
-Oh, and also... You can use **all kinds of grids!** Square, isometric, hex grids... All of them are supported!  
-
-
-## License
-
-This project is Open Source Software, released under the [MIT license](LICENSE). This basically means that you can do whatever you want with it. Enjoy!  
+Oh, and also... You can use **all kinds of grids!** Square, isometric, hex grids... All of them are supported!   
 
 
 ## Contributing
 
-[This repo](https://https://github.com/pablogila/TileMapDual_godot_node/) is open to pull requests, just make sure to check the [contributing guidelines](CONTRIBUTING.md).
-We personally encourage you to send back any significant improvements to this code so that the Godot community continues to thrive. Thanks!  
+Please feel free to contact us to provide feedback, suggestions, or improvements to this project. You may also check the the [contributing guidelines](CONTRIBUTING.md) to submit an issue or a pull request :D
 
 More about how TileMapDual v5 works under the hood on the [v5 discussion issue](https://github.com/pablogila/TileMapDual/issues/16).
 
+We personally encourage you to send back any significant improvements to this code so that the Godot community continues to thrive. Thanks!  
 
-## FAQ and Troubleshoot
+
+## Contributors
+
+We thank all [code contributors](https://github.com/pablogila/TileMapDual/graphs/contributors), as well as all issue contributions and of course all users out there, including you, beautiful person reading this. TileMapDual wouldn't be the same without you!
+
+This repo is currently managed by:
+
+- [pablogila](https://github.com/pablogila) (first dev)
+    - [Bluesky (@GilaPixel.bsky.social)](https://bsky.app/profile/gilapixel.bsky.social)
+    - [YouTube (@GilaPixel)](https://www.youtube.com/@gilapixel)
+    - [Instagram (@GilaPixel)](https://www.instagram.com/gilapixel/)
+    - [Mastodon (@GilaPixel@mastodon.gamedev.place)](https://mastodon.gamedev.place/@GilaPixel)
+    - [Twitter (@GilaPixel)](https://x.com/gilapixel)
+    - [Reddit (/u/pgilah)](https://www.reddit.com/u/pgilah/)
+
+- [raffimolero](https://github.com/raffimolero) (since v5)
+
+
+## License
+
+This project is Open Source Software, released under the [MIT license](LICENSE). This basically means that you can do whatever you want with it. Enjoy! 
+
+
+## FAQ and troubleshoot
 
 This plugin supports all the different tile shapes, layouts, and offset axes.
 Here's a rundown of all of them, with common mistakes and their corresponding fix:
@@ -163,16 +209,5 @@ Some additional notes:
 - [GlitchedInOrbit implementation in GDScript](https://github.com/GlitchedinOrbit/dual-grid-tilemap-system-godot-gdscript)
 - [Wang Tile Set Creator](https://github.com/kleingeist37/godot-wang-converter)
 - [Webtyler tool, to convert from 15-tile sets to 47-tile sets](https://wareya.github.io/webtyler/)
-- Credits for [snowflake svg](https://pixsector.com/icon/free-snowflake-svg-vectorart/967) and [water svg](https://www.svgrepo.com/svg/103674/water-drop)
-
-
-## Feedback
-
-Please feel free to contact us to provide feedback, suggestions, or improvements to this project. You may also check the the [contributing guidelines](CONTRIBUTING.md) to submit an issue or a pull request  :D  
-
-- [Twitter (@GilaPixel)](https://x.com/gilapixel)
-- [YouTube (@GilaPixel)](https://www.youtube.com/@gilapixel)
-- [Instagram (@GilaPixel)](https://www.instagram.com/gilapixel/)
-- [Mastodon (@GilaPixel)](https://mastodon.gamedev.place/@GilaPixel)
-- [Reddit (/u/pgilah)](https://www.reddit.com/u/pgilah/)
+- Sources for [snowflake svg](https://pixsector.com/icon/free-snowflake-svg-vectorart/967) and [water svg](https://www.svgrepo.com/svg/103674/water-drop)
 
