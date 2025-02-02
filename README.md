@@ -1,8 +1,8 @@
 # TileMapDual
 
-## Announcements
+## IMPORTANT ANNOUNCEMENT
 
-**We want YOU!** TileMapDual v5 is here with lots of updates, including hex grid support. Please report any issues you may encounter, and feel free to open new pull requests to contribute with your own code!
+**We want YOU!** TileMapDual v5 is here with lots of updates, including hex grid support. Please report any issues you may encounter, and feel free to check the current issues, open new pull requests and contribute with your own code!
 More info on the [v5 discussion](https://github.com/pablogila/TileMapDual/issues/16).
 
 
@@ -17,18 +17,15 @@ More info on the [v5 discussion](https://github.com/pablogila/TileMapDual/issues
     - [Multiple terrains](#multiple-terrains)
     - [Collisions](#collisions)
     - [TileMapDualLegacy stable version](#tilemapduallegacy-stable-version)
-- [Why?](#why)
 - [Contributing](#contributing)
-- [Contributors](#contributors)
-- [License](#license)
 - [FAQ and troubleshoot](#faq-and-troubleshoot)
+- [License](#license)
 - [References](#references)
-
 
 
 ## Introducing TileMapDual
 
-Welcome to *TileMapDual*: a simple, automatic and straightforward custom `TileMapLayer` node for [Godot](https://github.com/godotengine/godot) that provides a real-time, in-editor and in-game dual-grid tileset system, for both **square** and **isometric** grids.  
+Welcome to *TileMapDual*: a simple, automatic and straightforward custom `TileMapLayer` node for [Godot](https://github.com/godotengine/godot) that provides a real-time, in-editor and in-game dual-grid tileset system, for **all kinds of grids**. Square, isometric, hex... The only limit is your imagination!  
 
 This dual-grid system, [as explained by Oskar Stålberg](https://x.com/OskSta/status/1448248658865049605), reduces the number of tiles required from 47 to just 15 (yes, fifteen!!), rocketing your dev journey!  
 
@@ -111,39 +108,16 @@ Here's how to set it up:
 
 ### TileMapDualLegacy stable version
 
-The TileMapDual v5 release was a full rewritte. If you encounter issues, please report them on GitHub. For the time being, and to make the transition from v4 to v5 smoother, a custom `TileMapDualLegacy` node is available within the v5 version, containing the stable version from [v4.0.3](https://github.com/pablogila/TileMapDual/tree/v4.0.3).
+TileMapDual v5 was fully rewritten from the ground up. If you encounter issues, please report them on GitHub. For the time being, and to make the transition from v4 to v5 smoother, a custom `TileMapDualLegacy` node is available within the v5 version, containing the stable version from [v4.0.3](https://github.com/pablogila/TileMapDual/tree/v4.0.3).
 
-Not ethat the legacy version only supports square and isometric grids. On the contrary, support for material shaders is fully implemented, and the performance is currently better fthan for the v5 version. Once these issues are solved, the legacy version will be removed.
-
-
-## Why?
-
-This release simplifies the implementation of a dual-grid system by introducing a simple **custom node** that runs **automatically** and **in-editor**, making it easy to integrate into your own projects.  
-
-Previous implementations of a dual-grid tileset system in Godot, mainly by
-[jess::codes](https://github.com/jess-hammer/dual-grid-tilemap-system-godot) and
-[GlitchedInOrbit](https://github.com/GlitchedinOrbit/dual-grid-tilemap-system-godot-gdscript),
-were not automatic and required extensive manual configuration (at the time of writing).
-These implementations also used an inverted version of the [standard 16-tile template](https://user-images.githubusercontent.com/47016402/87044518-ee28fa80-c1f6-11ea-86f5-de53e86fcbb6.png) (although Jess's tileset is provided as an example in this repo).
-This is a potential source of headaches, and this release corrects said inversion.  
-
-This release also implements modern **TileMapLayers** instead of the deprecated TileMap node.  
-
-Plus, you can use **multiple atlases** in the same tileset.  
-
-Oh, and also... You can use **all kinds of grids!** Square, isometric, hex grids... All of them are supported!   
+Note that the legacy version only supports square and isometric grids. On the contrary, support for material shaders is fully implemented in the legacy version, and the performance is better than for the v5 version.
 
 
 ## Contributing
 
-Please feel free to contact us to provide feedback, suggestions, or improvements to this project. You may also check the the [contributing guidelines](CONTRIBUTING.md) to submit an issue or a pull request :D
+Please feel free to report issues and to open pull requests with your code contributions. You may want to check the [contributing guidelines](CONTRIBUTING.md) :D
 
 More about how TileMapDual v5 works under the hood on the [v5 discussion issue](https://github.com/pablogila/TileMapDual/issues/16).
-
-We personally encourage you to send back any significant improvements to this code so that the Godot community continues to thrive. Thanks!  
-
-
-## Contributors
 
 We thank all [code contributors](https://github.com/pablogila/TileMapDual/graphs/contributors), as well as all issue contributions and of course all users out there, including you, beautiful person reading this. TileMapDual wouldn't be the same without you!
 
@@ -158,11 +132,6 @@ This repo is currently managed by:
     - [Reddit (/u/pgilah)](https://www.reddit.com/u/pgilah/)
 
 - [raffimolero](https://github.com/raffimolero) (since v5)
-
-
-## License
-
-This project is Open Source Software, released under the [MIT license](LICENSE). This basically means that you can do whatever you want with it. Enjoy! 
 
 
 ## FAQ and troubleshoot
@@ -198,6 +167,13 @@ In case you make mistakes, you can edit the terrain configuration and see the re
 Some additional notes:
 - Terrain autogeneration does not work if you are editing a TileSet by itself from the assets folder. You must put it in a TileMapDual first.
 - It currently does not support alternative tiles.
+
+
+
+
+## License
+
+This project is Open Source Software, released under the [MIT license](LICENSE). This basically means that you can do whatever you want with it. Enjoy! 
 
 
 ## References
