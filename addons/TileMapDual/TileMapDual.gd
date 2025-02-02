@@ -40,15 +40,15 @@ func _make_self_invisible() -> void:
 
 
 ## HACK: How long to wait before processing another "frame"
-@export var map_refresh_cooldown: float = 0.0
+@export_range(0.0, 0.1) var refresh_time: float = 0.02
 var _timer: float = 0.0
 func _process(delta: float) -> void: # Only used inside the editor
-	if map_refresh_cooldown < 0.0:
+	if refresh_time < 0.0:
 		return
 	if _timer > 0:
 		_timer -= delta
 		return
-	_timer = map_refresh_cooldown
+	_timer = refresh_time
 	call_deferred('_changed')
 
 
