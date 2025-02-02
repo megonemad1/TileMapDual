@@ -35,7 +35,7 @@ Just copy the `addons/TileMapDual` folder to your Godot project, and enable it o
 TileMapDual is loaded in the same way as a regular `TileMapLayer` node.
 You have to create a `TileMapDual` node with your own tileset, and set it up with the appropriate tile shape and orientation, etc.
 
-![](docs/setup.mp4)
+![](docs/setup.gif)
 
 
 You can now start sketching your level with the fully-filled tile, indicated below for a square grid.
@@ -67,7 +67,7 @@ Check the first video on [FAQ and Troubleshoot](#faq-and-troubleshoot) to see ho
 
 To use more than two terrain types, it is highly encouraged to use multiple TileMapDual layers:
 
-![](docs/multiple_layers.mp4)
+![](docs/multiple_layers.gif)
 
 
 ### Hitboxes
@@ -78,7 +78,7 @@ To include extra data like hitboxes, pathing and such to your TileSet, it is rec
 
 Here's how to set it up:
 
-![](docs/custom_drawing_sprites.mp4)
+![](docs/custom_drawing_sprites.gif)
 
 
 ### TileMapDual Legacy (stable version)
@@ -119,29 +119,29 @@ I personally encourage you to send back any significant improvements to this cod
 This plugin supports all the different tile shapes, layouts, and offset axes.
 Here's a rundown of all of them, with common mistakes and their corresponding fix:
 
-![](docs/all_shapes_and_common_mistakes.mp4)
+![](docs/all_shapes_and_common_mistakes.gif)
 
 
 You can then put hitboxes on the display tiles and logic such as pathing on the logical tiles.
 If your spritesheet doesn't follow the standard preset layout, you can manually set its terrains.
 Here is how to set up a Hexagonal Vertical tileset:
 
-![](docs/manual_hexagonal_terrain_setup.mp4)
+![](docs/manual_hexagonal_terrain_setup.gif)
 
 
 You can safely switch to a different tileset if you need to:
 
-![](docs/change_tilesets.mp4)
+![](docs/change_tilesets.gif)
 
 
 You can use multiple atlases in the same TileSet, with a few quirks if you don't set up the terrains properly:
 
-![](docs/multiple_atlases_conflict.mp4)
+![](docs/multiple_atlases_conflict.gif)
 
 
 In case you make mistakes, you can edit the terrain configuration and see the results in real-time:
 
-![](docs/terrain_setup_live_feedback.mp4)
+![](docs/terrain_setup_live_feedback.gif)
 
 
 Some additional notes:
