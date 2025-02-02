@@ -17,6 +17,8 @@ func _ready() -> void:
 	else: # Run in-game using signals for better performance
 		set_process(false)
 		changed.connect(_changed, 1)
+	# Update full tileset on first instance
+	_changed()
 
 
 ## Automatically generate terrains when the atlas is initialized.
