@@ -106,12 +106,17 @@ Plus, you can use **multiple atlases** in the same tileset.
 Oh, and also... You can use **all kinds of grids!** Square, isometric, hex grids... All of them are supported!  
 
 
-## License and contributing
+## License
 
 This project is Open Source Software, released under the [MIT license](LICENSE). This basically means that you can do whatever you want with it. Enjoy!  
 
+
+## Contributing
+
 [This repo](https://https://github.com/pablogila/TileMapDual_godot_node/) is open to pull requests, just make sure to check the [contributing guidelines](CONTRIBUTING.md).
-I personally encourage you to send back any significant improvements to this code so that the Godot community continues to thrive. Thanks!  
+We personally encourage you to send back any significant improvements to this code so that the Godot community continues to thrive. Thanks!  
+
+More about how TileMapDual v5 works under the hood on the [v5 discussion issue](https://github.com/pablogila/TileMapDual/issues/16).
 
 
 ## FAQ and Troubleshoot
