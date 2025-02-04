@@ -9,6 +9,10 @@ var tile_size: Vector2i
 ## caches the previous result of display.tileset_grid_shape(tile_set) to see when it changes.
 var grid_shape: Display.GridShape
 
+const meta_flag = &"Composite"
+func is_composite():
+	return tile_set.has_meta(meta_flag) and tile_set.get_meta(meta_flag)
+
 func _init(tile_set: TileSet) -> void:
 	# tileset_deleted.connect(func(): print('tileset_deleted'), 1)
 	# tileset_created.connect(func(): print('tileset_created'), 1)
