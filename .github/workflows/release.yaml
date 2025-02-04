@@ -1,0 +1,40 @@
+name: Create and Publish Release
+
+on:
+  push:
+    paths:
+      - './addons/TileMapDual/plugin.cfg'
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  release:
+    name: Zip and Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get version
+        id: get_tag
+        run: |
+          TAG_NAME="$(cat './addons/TileMapDual/plugin.cfg' | grep version | cut -d'"' -f2)"
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
+      - name: Zip TileMapDual directory
+        uses: thedoctor0/zip-release@0.7.6
+        with:
+          filename: TileMapDual.zip
+          path: ./TileMapDual
+          directory: ./addons
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          name: Release ${{ env.TAG_NAME }}
+          draft: false
+          prerelease: false
+          files: ./addons/TileMapDual.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
