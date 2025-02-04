@@ -1,14 +1,13 @@
 # TileMapDual
 
-## Fork where i hack composite tiles in
-theis is a quick hack to get composite tiles working such that atlas tiles with a transparrent background will be overlayed on top of eachother to give the illusion of one tile. as allways there are trade offs and gotyas but does give a super quick way to make one tilemaplayer have lots of diffrent terrains. 
-there will be at most 4 layers to achive this effect (unless something goes verry wrong) and those will only be created if the tilemap needs it.
+![GitHub Release](https://img.shields.io/github/v/release/megonemad1/TileMapDual?style=flat-square)
 
-![](docs/CompositeTile.png)
+## Fork where i hack composite tiles in
+
 ![](docs/compositetile.webp)
 
-**Tileset resorce needs &"Composite" bool metadata, that is set to true**
-you need exsactly one fully transparrent tile that is marked as a terrain tile in the atlas 
+theis is a quick hack to get composite tiles working such that atlas tiles with a transparrent background will be overlayed on top of eachother to give the illusion of one tile. as allways there are trade offs and gotyas but does give a super quick way to make one tilemaplayer have lots of diffrent terrains. 
+there will be at most 4 layers to achive this effect (unless something goes verry wrong) and those will only be created if the tilemap needs it.
 
 ## IMPORTANT ANNOUNCEMENT
 
@@ -115,6 +114,17 @@ Here's how to set it up:
 
 ![](docs/custom_drawing_sprites.gif)
 
+### Composite
+
+![](docs/CompositeTile.png)
+
+only tested with basic square tilemaps.
+
+**Tileset resorce needs &"Composite" bool metadata, that is set to true**
+
+![](docs\Composite_exsample.png)
+
+you need exsactly one fully transparrent tile that is marked as a terrain tile in the atlas 
 
 ### TileMapDualLegacy stable version
 
