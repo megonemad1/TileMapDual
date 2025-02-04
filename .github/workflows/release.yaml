@@ -3,7 +3,7 @@ name: Create and Publish Release
 on:
   push:
     paths:
-      - './addons/TileMapDual/plugin.cfg'
+      - 'addons/TileMapDual/plugin.cfg'
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
       - name: Zip TileMapDual directory
         uses: thedoctor0/zip-release@0.7.6
         with:
-          filename: TileMapDual.zip
+          filename: TileMapDual${{ env.TAG_NAME }}.zip
           path: ./TileMapDual
           directory: ./addons
 
@@ -35,6 +35,6 @@ jobs:
           name: Release ${{ env.TAG_NAME }}
           draft: false
           prerelease: false
-          files: ./addons/TileMapDual.zip
+          files: ./addons/TileMapDual${{ env.TAG_NAME }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
