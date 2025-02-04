@@ -66,7 +66,13 @@ func apply_rule(terrain_neighbors: Array) -> Dictionary:
 	var normalized_neighbors = terrain_neighbors.map(normalize_terrain)
 
 	var node := _rules
+	var lowest_layer = 0
+	for n in normalized_neighbors:
+		if n > 0:
+			lowest_layer=n if lowest_layer ==0 else min(lowest_layer,n)
 	for terrain in normalized_neighbors:
+		if terrain != lowest_layer:
+			terrain = 0
 		if terrain not in node:
 			terrain = 0
 		if terrain not in node:
