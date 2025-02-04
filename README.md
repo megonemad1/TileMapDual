@@ -1,5 +1,13 @@
 # TileMapDual
 
+## Fork where i hack composite tiles in
+theis is a quick hack to get composite tiles working such that atlas tiles with a transparrent background will be overlayed on top of eachother to give the illusion of one tile. as allways there are trade offs and gotyas but does give a super quick way to make one tilemaplayer have lots of diffrent terrains. 
+there will be at most 4 layers to achive this effect (unless something goes verry wrong) and those will only be created if the tilemap needs it.
+
+![](docs/CompositeTile.png)
+
+**Tileset resorce needs &"Composite" bool metadata, that is set to true**
+you need exsactly one fully transparrent tile that is marked as a terrain tile in the atlas 
 
 ## IMPORTANT ANNOUNCEMENT
 
